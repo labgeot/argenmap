@@ -11,9 +11,9 @@
   height: 34px;
   color: black;
   font-size: 1.1em;
-  bottom: 30%;
+  top: 334px;
   left: 10px;
-  z-index: 1000;
+  z-index: 999;
   border: 2px solid rgba(0, 0, 0, 0.2);
 	border-radius: 3px ;
 }
@@ -160,7 +160,7 @@
 		max-height: 250px;
 		overflow: scroll;
 	}
-}
+	}
 @media (max-height: 360px) {
 	#modalOpenFilel{
 		left: 45px ;

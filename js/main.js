@@ -341,6 +341,9 @@ async function loadTemplate(data) {
         
         const modalgeojson = new IconModalGeojson;
         modalgeojson.createComponent();
+
+        const sidebarTool = new SidebarTools
+        sidebarTool.createComponent()
       } 
     }, 100);
   });
