@@ -7,6 +7,7 @@
   height: 30px;
   background: rgba(0,0,0,0.2);
   border-radius: 5px;
+  box-shadow: inset 0 0 10px rgb(174, 174, 174, 1);
 }
 
 div #sidebar-toolbar-icon-left:hover{
@@ -24,6 +25,7 @@ div #sidebar-toolbar-icon-left:hover{
   height: 30px;
   background: rgba(0,0,0,0.2);
   border-radius: 5px;
+  box-shadow: inset 0 0 10px rgb(174, 174, 174, 0.8);
 }
 
 div #sidebar-toolbar-icon-right:hover{
