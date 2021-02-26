@@ -135,15 +135,16 @@ li.active > div > a {
 	width:96%;
 }
 @media (max-width: 390px) {
-	.tooltip {
+	/*.tooltip {
 		display: none !important;
-	}
+	}*/
 	.leaflet-control-minimap {
 		display: none;
 	}
+	/*
 	.leaflet-top.leaflet-right {
 		display: none;
-	}
+	}*/
 	.navbar-header > a > img {
 		left: 50px;
 	}
@@ -348,7 +349,7 @@ Control mapa base
 }
 
 .basemap-selector .leaflet-control-layers-toggle {
-	width: 34px;
+	width: 35px;
 	height: 34px;
 	line-height: 30px;
 	border-radius: 4px;
@@ -370,6 +371,13 @@ Control mapa base
 	width: 230px;
 }
 
+@media (max-height: 400px) {
+	.basemap-selector > a {
+    width: 30px !important;
+    height: 30px !important;
+		border-radius: 4px;
+}
+}
 /*******************************
 Control graticula
 *******************************/
@@ -392,4 +400,117 @@ Control graticula
 .leaflet-control-customgraticule:hover {
 	background-color: #f4f4f4;
 	cursor: pointer;
+}
+
+/*******************************
+SideBar
+*******************************/
+@media (max-width: 768px){
+  .leaflet-control-minimap {
+		display: none;
+	}
+  
+  #sidebar-toolbar-icon-right{
+    top: 10px;
+    right: 46px;
+  }
+}
+
+
+@media (max-width: 600px){ 
+  .leaflet-control{
+  margin-left: 0px !important;
+  margin-top: 0px !important;
+ }
+  div .leaflet-draw-toolbar {
+    margin-top: 0px !important;
+  }
+  .leaflet-right .leaflet-control{
+    margin-right: 0px !important;
+    margin-top: 0px !important;
+  }
+}
+
+@media (max-height: 500px) {
+
+  #collapseBaseMapLayers .list-group-item{
+  padding: 0px !important;}
+    
+  #collapseBaseMapLayers {
+  margin-left: 40px !important;;}
+
+  .leaflet-control-customgraticule{
+    width: 32px;
+    height: 32px;
+  }
+
+  div .leaflet-control-measure{
+    left: 34px !important;
+    top: 156px !important;
+    position: absolute;
+  }
+
+  .leaflet-control-minimap {
+		display: none;
+	}
+	
+	.leaflet-control{
+		margin-left: 0px !important;
+		margin-top: 0px !important;
+    border: 1px solid rgba(0,0,0,0.2) !important
+	}
+
+  .basemap-selector > a{
+    border: 0px solid rgba(0,0,0,0.2) !important;
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .leaflet-control-layers-toggle{
+    border: 1px solid rgba(0,0,0,0.2) !important
+  }
+  
+  .leaflet-control-zoom-fullscreen .fullscreen-icon{
+    border: 1px solid rgba(0,0,0,0.2) !important
+  }
+
+  .leaflet-draw-toolbar .leaflet-bar{
+    bottom: 150px !important;
+    position: relative;
+  }
+
+  div .leaflet-draw-toolbar {
+    margin-top: 0px !important;
+  }
+  .leaflet-right .leaflet-control{
+    margin-right: 0px !important;
+    margin-top: 0px !important;
+  }
+
+  .leaflet-control-measure-interaction div h3{
+    font-size: 12px !important;
+  }
+  .leaflet-draw-toolbar{
+    border: 1px solid rgba(0,0,0,0.2) !important
+  }
+  
+}
+
+@media(max-height: 550px){
+  .leaflet-control-minimap {
+		display: none;
+	}
+
+   .leaflet-control-scale-line{
+    display: none;
+  }
+  
+}
+
+@media(max-height: 400px){
+ 
+  .leaflet-bottom{
+    margin-right: 40px !important;
+  }
+ 
 }

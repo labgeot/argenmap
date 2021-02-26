@@ -1,15 +1,32 @@
-#sidebar-toolbar-icon{
+#sidebar-toolbar-icon-left{
   text-align: center;
   position:absolute;
   top: 55px;
-  left: 47px;
-  z-index: 3000;
+  left: 46px;
+  z-index: 999;
   height: 30px;
   background: rgba(0,0,0,0.2);
   border-radius: 5px;
 }
 
-div #sidebar-toolbar-icon:hover{
+div #sidebar-toolbar-icon-left:hover{
+  width: 30px;
+  height: 30px;
+  background: rgba(0,0,0,0.2);
+}
+
+#sidebar-toolbar-icon-right{
+  text-align: center;
+  position:absolute;
+  top: 10px;
+  right: 46px;
+  z-index: 999;
+  height: 30px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 5px;
+}
+
+div #sidebar-toolbar-icon-right:hover{
   width: 30px;
   height: 30px;
   background: rgba(0,0,0,0.2);
@@ -20,86 +37,43 @@ div #sidebar-toolbar-icon:hover{
   color: rgba(0,0,0,0.2);
 }
 
-@media (max-height: 600px){
-  .leaflet-control-minimap {
-		display: none;
-	}
+@media(max-height: 400px){
+  #sidebar-toolbar-icon-left{
+    top: 34px;
+    left: 36px;
+  }
+
+  #sidebar-toolbar-icon-right{
+   top: 5px;
+   right: 36px;
+  }
 }
-@media (max-height: 400px) {
- 
-  div .leaflet-control-measure{
-    left: 37px !important;
-    bottom: 68px !important;
-  }
 
-  .leaflet-control-minimap {
-		display: none;
-	}
-	
-	.leaflet-control{
-		margin-left: 0px !important;
-		margin-top: 0px !important;
-	}
-
-  #modalgeojson{
-		left: 37px !important;
-		top: 196px;
-	}
-
-	.leaflet-control-zoomhome .leaflet-bar .leaflet-control{
-		display: none;
-	}
-  .leaflet-control-scale-line{
-    display: none;
-  }
-  .leaflet-control-mouseposition .leaflet-control{
-    margin-right: 30px !important;
-  }
-
-  .leaflet-draw-toolbar .leaflet-bar{
-    bottom: 150px !important;
-    position: relative;
+@media (max-height: 500px) {
+  #sidebar-toolbar-icon-left{
+    top: 34px;
+    left: 36px;
   }
 
   #sidebar-toolbar-icon{
     top: 40px;
     left: 40px;
   }
- #collapseBaseMapLayers .list-inline{overflow-y: scroll;}
 
- div .leaflet-draw-toolbar {
-  margin-top: 0px !important;
- }
- .leaflet-right .leaflet-control{
-  margin-right: 0px !important;
-  margin-top: 0px !important;
- }
-  
- .leaflet-control-mouseposition .leaflet-control{
-  margin-right: 40px !important;
- }
- .leaflet-bottom{
-  margin-right: 40px !important;
- }
- .leaflet-control-measure-interaction div h3{
-   font-size: 12px !important;
- }
+  #sidebar-toolbar-icon-right{
+    top: 5px;
+    right: 36px;
+   }
 }
 
+@media (max-width: 600px){
+  #sidebar-toolbar-icon-left{
+    top: 34px;
+    left: 36px;
+   }
+   #sidebar-toolbar-icon-right{
+    top: 0px;
+    right: 36px;
+   }
 
-@media (max-width: 600px) {
-  	.leaflet-control{
-		margin-left: 0px !important;
-		margin-top: 0px !important;
-	}
-
-  #modalgeojson{
-		left: 0px !important;
-		top: 265px !important;
-	}
-
-  #sidebar-toolbar-icon{
-    top: 38px;
-    left: 37px;
-  }
 }

@@ -342,8 +342,12 @@ async function loadTemplate(data) {
         const modalgeojson = new IconModalGeojson;
         modalgeojson.createComponent();
 
-        const sidebarTool = new SidebarTools
-        sidebarTool.createComponent()
+        $.getScript(`./js/components/sidebar/sidebar.js`, (res) => {
+          const sidebarTool = new SidebarTools
+          sidebarTool.createComponent()
+        });
+        
+        
       } 
     }, 100);
   });

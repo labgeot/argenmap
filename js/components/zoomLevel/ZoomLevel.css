@@ -39,7 +39,7 @@
 @media (max-width: 600px) {
     #zoom-level {
         bottom: 55px;
-        right: 2.8%;
+        right: 1px;
     }
 }
 

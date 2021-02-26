@@ -31,8 +31,7 @@ function capturetoPNG(el){
   zoom.setAttribute("data-html2canvas-ignore", "true")
   let sc = document.getElementById("screenshot")
   sc.setAttribute("data-html2canvas-ignore", "true")
-  let openfile = document.getElementById("iconopenfile-container")
-  openfile.setAttribute("data-html2canvas-ignore", "true")
+
 
 
   let id =  '#'+el
