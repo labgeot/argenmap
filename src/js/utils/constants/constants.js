@@ -16,6 +16,12 @@ const METATAG_TITLE = 'Argenmap - Instituto Geográfico Nacional';
 const METATAG_DESCRIPTION = 'Visualizador de mapas web';
 const METATAG_IMAGE_URL = 'https://pbs.twimg.com/profile_images/1274694532421083137/TMc-ZIX4.jpg';
 
+//Available services
+const SERVICES = ['leaflet'];
+
+//Available types of layers
+const LAYER_TYPES = ['wms', 'wmts', 'tpl', 'overlay', 'vector'];
+
 //Available Plugins
 const PLUGINS = {
     "leaflet": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js",
