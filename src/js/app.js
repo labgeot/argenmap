@@ -274,8 +274,12 @@ async function loadDefaultJson() {
 
 async function loadTemplate(data, isDefaultTemplate) {
   $(document).ready( async function() {
+   
     await app.init(data);
-
+    //UI
+    const uiArgenmap = new UIApp
+    uiArgenmap.createArgenmap()
+    
     //Template
     template = app.template; // define wich template to use
 
@@ -306,6 +310,8 @@ async function loadTemplate(data, isDefaultTemplate) {
     if (app.analytics_ids) {
       addAnalytics(app.analytics_ids);
     }
+
+
 
     app.addBasemaps();
     app.addLayers();

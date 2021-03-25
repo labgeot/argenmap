@@ -296,7 +296,7 @@ class LayersInfoWMS extends LayersInfo {
 
         var thisObj = this;
 
-        if (!$('#temp-menu').hasClass('temp')) { $('body').append('<div id="temp-menu" class="temp" style="display:none"></div>'); }
+        if (!$('#temp-menu').hasClass('temp')) { $('#Argenmap').append('<div id="temp-menu" class="temp" style="display:none"></div>'); }
 
         // Load geoserver Capabilities, if success Create menu and append to DOM
         $('#temp-menu').load(thisObj.getHostOWS() + '?service=' + thisObj.service + '&version=' + thisObj.version + '&request=GetCapabilities', function () {
@@ -502,7 +502,7 @@ class LayersInfoWMTS extends LayersInfoWMS {
         
         var thisObj = this;
         
-        if (!$('#temp-menu').hasClass('temp')) { $('body').append('<div id="temp-menu" class="temp" style="display:none"></div>'); }
+        if (!$('#temp-menu').hasClass('temp')) { $('#Argenmap').append('<div id="temp-menu" class="temp" style="display:none"></div>'); }
 
         // Load geoserver Capabilities, if success Create menu and append to DOM
         $('#temp-menu').load(thisObj.getHost() + '?service=' + thisObj.service + '&version=' + thisObj.version + '&request=GetCapabilities', function () {
