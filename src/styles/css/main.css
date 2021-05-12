@@ -3,14 +3,163 @@ General
 *******************************/
 body {
   font-family: Roboto, sans-serif;
-  background-color: #008dc9;
   overflow: hidden;
+  padding-top: 50px;
+  margin: 0px;
 }
 
 @media (max-width: 600px) {
   body {
     overflow-y: scroll;
   }
+}
+
+.leaflet-left{
+  left: 100px !important;
+}
+#menu{
+  height: 80%;
+  overflow: hidden;
+  float: none;
+  border-radius: 8px;
+  padding: 10px;
+  /*background-color: transparent ;*/
+  top: 50px;
+  position: absolute;
+  margin-bottom: 10px;
+  /*border: 1px solid red;*/
+  display: -ms-flex;
+	display: -webkit-flex;
+	display: flex;
+  z-index: 1500;
+}
+
+.folder{
+  background-color: lavender;
+  cursor: pointer;
+  padding-left: 15px;
+}
+
+#tabMenu-argenmap{
+  background-color:#008dc9;
+  /*border: 1px solid red;*/
+  width: 60px;
+  text-align: right;
+  padding: 5px;
+}
+
+#containerMenu-argenmap{
+  /* border: 1px solid red; */
+  padding: 10px;
+  width: 300px;
+  overflow: auto;
+}
+
+
+#controls-leftletUI{
+  border: 1px solid red;
+  padding: 10px;
+  width: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.tab {
+  float: left;
+  border: 1px solid #ccc;
+  width: 30%;
+}
+
+.tab button {
+  display: block;
+  background-color: inherit;
+  color: black;
+  padding: 22px 10px;
+  width: 100%;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tab button:hover {
+  background-color: #ddd;
+}
+
+.tab button.active {
+  background-color: #ccc;
+}
+
+.tabcontent {
+  /*background-color:rgba(0, 48, 69, 0.5);*/
+  float: left;
+  /*border: 1px solid #ccc;*/
+  width: 100%;
+  height: 100%;
+  border-left: none;
+  display: none;
+}
+
+.layeroff{
+  background-color: white;
+}
+
+.layeron{
+  background-color: violet;
+}
+
+.layerItem{
+  cursor: pointer;
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+  padding-left: 15px;
+}
+
+.nameLayer{
+  width: 70%;
+}
+
+.imgLayer{
+ width: 10%;
+}
+.editLayerIcon{
+  width: 10%;
+  color: #C0C0C0;
+}
+
+.editLayerIcon :hover{
+  color: #585858;
+}
+
+.downloadLayerIcon{
+  width: 10%;
+  color: #C0C0C0;
+}
+.downloadLayerIcon :hover{
+  color: #585858;
+}
+
+
+.editLayer{
+  background-color: darkgray;
+}
+
+/****************/
+
+#top-left-logo{
+  width: 470px;
+  height: 50px;
+}
+
+#top-right-logo{
+position:absolute;
+right:10px;
+float:right;
+top: 0;
 }
 
 /*******************************
@@ -30,8 +179,6 @@ Menu principal
 }
 
 .panel-default > .panel-heading {
-  background-color: #008dc9;
-  color: white;
   font-size: 15px;
   font-weight: bold;
 }
@@ -39,23 +186,11 @@ Menu principal
   font-size: 15px;
   font-weight: bold;
 }
-#sidebar-container {
-  z-index: 1500;
-  background-color: #008dc9;
-}
+
 #sidebar .nav {
   border: 1px;
 }
 
-.navbar-toggle .icon-bar {
-  border: 1px solid #337ab7;
-}
-.navbar-header > button {
-  display: block;
-}
-.navbar {
-  background-color: #008dc9;
-}
 .navbar-brand {
   padding-top: 7px;
 }
@@ -63,15 +198,15 @@ Menu principal
 .nav-sidebar > .active > a {
   background-color: inherit !important;
 }
-.navbar-header > a > img {
-  width: 50px;
-  top: 7px;
+.header {
+  top: 0px;
   position: absolute;
+  width: 100%;
 }
+/*
 .nav-tabs {
-  background-color: #008dc9;
   border-bottom: 1px solid #ddd;
-}
+}*/
 .nav-tabs > .active {
   background-color: transparent !important;
 }
@@ -84,7 +219,6 @@ Menu principal
   color: #444444;
 }
 .nav-tabs > li.active > a {
-  background-color: #33b560 !important;
   color: white !important;
 }
 .tab-content {
@@ -93,9 +227,7 @@ Menu principal
 .panel-heading {
   border-bottom: 1px solid white;
 }
-.active {
-  background-color: #33b560 !important;
-}
+
 li.active > div > a {
   color: white !important;
 }
@@ -111,7 +243,7 @@ li.active > div > a {
   text-align: center;
   vertical-align: middle;
   border-radius: 50%;
-  background: #33b560;
+  
 }
 .item-group-short-desc {
   font-size: 11px;
@@ -141,19 +273,12 @@ li.active > div > a {
   vertical-align: top;
   width: 96%;
 }
+
+
 @media (max-width: 390px) {
-  /*.tooltip {
-		display: none !important;
-	}*/
+
   .leaflet-control-minimap {
     display: none;
-  }
-  /*
-	.leaflet-top.leaflet-right {
-		display: none;
-	}*/
-  .navbar-header > a > img {
-    left: 50px;
   }
 }
 @media (max-width: 768px) {
@@ -280,17 +405,9 @@ Leaflet popup featureInfo
 }
 
 .featureInfo h4 {
-  border-bottom: 3px solid #085183;
   margin: 2em;
 }
 
-.featuresGroup {
-  border-bottom: 2px solid #085183;
-}
-
-.individualFeature {
-  border-bottom: 1px dashed #085183;
-}
 .individualFeature h4 {
   margin: 9px 0px !important;
 }
@@ -418,6 +535,7 @@ Control graticula
 SideBar
 *******************************/
 @media (max-width: 768px) {
+  
   .leaflet-control-minimap {
     display: none;
   }
@@ -426,6 +544,7 @@ SideBar
     top: 10px;
     right: 46px;
   }
+
 }
 
 @media (max-width: 600px) {
@@ -440,6 +559,7 @@ SideBar
     margin-right: 0px !important;
     margin-top: 0px !important;
   }
+
 }
 
 @media (max-height: 500px) {
@@ -521,4 +641,5 @@ SideBar
   .leaflet-bottom {
     margin-right: 40px !important;
   }
+
 }

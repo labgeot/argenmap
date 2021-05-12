@@ -44,7 +44,25 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
         setCharts(app.charts.isActive);
       }
 
-      await this._startModules();
+      if (app.hasOwnProperty('theme')) {
+        if (!app.theme.bodyBackground)
+        app.theme.bodyBackground = DEFAULT_THEME.bodyBackground
+        if (!app.theme.colorHeader)
+        app.theme.colorHeader = DEFAULT_THEME.colorHeader
+        if (!app.theme.colorMenu)
+        app.theme.colorMenu = DEFAULT_THEME.colorMenu
+        if (!app.theme.colorActiveLayer)
+        app.theme.colorActiveLayer = DEFAULT_THEME.colorActiveLayer
+      }else{
+        app.theme = DEFAULT_THEME
+      }
+/*
+      if (!app.hasOwnProperty('logo')){
+        app.logo.srcLogoReferencias = DEFAULT_THEME.srcLogoReferencias
+      }*/
+
+     
+      //await this._startModules();
     },
 
     _startModules: async function () {
@@ -52,7 +70,7 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
         for (const module of app.profiles[app.profile].modules) {
           switch (module) {
             case "login":
-                await login.load();
+                await login.load(); 
               break;
             // Intialize here more modules defined in profile (config JSON)
             default:
@@ -276,7 +294,9 @@ async function loadTemplate(data, isDefaultTemplate) {
   $(document).ready( async function() {
    
     await app.init(data);
+    
     //UI
+
     const uiArgenmap = new UIApp
     uiArgenmap.createArgenmap()
     
@@ -329,7 +349,8 @@ async function loadTemplate(data, isDefaultTemplate) {
     });
 
     template = 'templates/' + template + '/main.html';
-
+    //await app._startModules();
+    await app._startModules();
     //Wait until global 'mapa' object is available.
     const intervalID = setInterval(() => {
       if (mapa && mapa.hasOwnProperty('_leaflet_id')) {

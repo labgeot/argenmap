@@ -68,22 +68,8 @@
 
 /*tabulator*/
 
-@media (max-width: 768px) {
-	#ContainerTable{
-		left: 45px ;
-		top: 50px ;
-		max-width: 700px;
-	}
-}
-@media (max-width: 600px) {
-	#ContainerTable{
-		left: 45px ;
-		top: 50px ;
-		max-width: 580px;
-	}
 
 
-}
 @media (max-width: 480px) {
 	#ContainerTable{
 		left: 45px ;

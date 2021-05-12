@@ -36,3 +36,12 @@ const PLUGINS = {
     "WMTS": "./src/js/map/plugins/leaflet/leaflet-wmts/leaflet-tilelayer-wmts.js",
     "EasyPrint": "./src/js/map/plugins/leaflet/leaflet-easyPrint/bundle.js"
 };
+
+//Default Theme
+const DEFAULT_THEME ={
+    bodyBackground: "#008dc9",
+    colorHeader: "#008dc9",
+    colorMenu: "#008dc9",
+    colorActiveLayer: "#33b560",
+    srcLogoReferencias: "src/styles/images/referencias_icono.png"
+}

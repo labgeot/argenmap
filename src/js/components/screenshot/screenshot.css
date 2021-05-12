@@ -12,7 +12,7 @@
   color: black;
   font-size: 1.1em;
   top: 378px;
-  left: 10px;
+  left: 110px;
   z-index: 999;
   border: 2px solid rgba(0, 0, 0, 0.2);
   border-radius: 3px;
@@ -43,7 +43,7 @@
 @media (max-height: 500px) {
   #screenshot {
     top: 124px;
-    left: 34px;
+    left: 110px;
     border: 1px solid rgba(0, 0, 0, 0.2) !important;
     width: 32px;
     height: 32px;

@@ -40,6 +40,7 @@ class SidebarTools {
   }
 
   createComponent() {
+
     const elem = document.createElement("div");
     elem.id = "sidebar-toolbar-icon-left";
     elem.innerHTML = this.component;
@@ -56,7 +57,7 @@ class SidebarTools {
         if (window.matchMedia("(max-width: 400px)").matches) {
           this.style.left = "36px";
         } else {
-          this.style.left = "46px";
+          //this.style.left = "46px";
         }
 
         areHiddenLeft = false;
@@ -68,8 +69,9 @@ class SidebarTools {
         abrirarchivo.style.display = "";
         screenshot.style.display = "";
         divbar[2].hidden = false;
+        
       } else {
-        this.style.left = "10px";
+        this.style.left = "110px";
         areHiddenLeft = true;
         zoomhome[0].hidden = true;
         fullscreen[0].style.display = "none";
@@ -86,7 +88,7 @@ class SidebarTools {
       if (areHiddenRigth) {
         areHiddenRigth = false;
         drawb[0].hidden = false;
-        this.style.right = "46px";
+        //this.style.right = "46px";
       } else {
         areHiddenRigth = true;
         drawb[0].hidden = true;
