@@ -60,6 +60,11 @@
       ]
     },
     {
+      "tab": {
+        "id": "Capas",
+        "searcheable": true,
+        "content": "Capas"
+      },
       "type": "wmslayer",
       "peso": 70,
       "nombre": "Industria y servicios",
@@ -71,6 +76,11 @@
       "host": "https://wms.ign.gob.ar/geoserver/industria-servicios"
     },
     {
+      "tab": {
+        "id": "Capas",
+        "searcheable": true,
+        "content": "Capas"
+      },
       "type": "wmslayer",
       "peso": 120,
       "nombre": "Modelos digitales de elevaciones",
@@ -80,6 +90,14 @@
       "servicio": "wms",
       "version": "1.3.0",
       "host": "https://wms.ign.gob.ar/geoserver/modelos-digitales-elevaciones"
+    },
+    {
+      "tab": {
+        "id": "Geoprocesos",
+        "searcheable": false,
+        "content": "Geoprocesos"
+      },
+      "type": "tab"
     }
   ],
   "template": "ign-geoportal-basic"

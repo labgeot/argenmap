@@ -215,6 +215,10 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
                   gestorMenu.addFolders(item.seccion, item.folders);
                 }
                 break;
+                case "tab":
+                gestorMenu.addTab(tab);
+
+                break;
               default:
                 let sourceTypeUndefined = "The 'type' parameter is not set for the source:" + item.host;
             }
@@ -364,6 +368,9 @@ async function loadTemplate(data, isDefaultTemplate) {
         const sidebarTool = new SidebarTools;
         sidebarTool.createComponent();
 
+        const form = new FormGeoprocesos
+        form.createTabContent()
+        
         setProperStyleToCtrlBtns();
       }
     }, 100);

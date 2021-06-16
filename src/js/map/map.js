@@ -596,6 +596,15 @@ $("body").on("pluginLoad", function(event, plugin){
 								layer.downloadGeoJSON();
 							}
 						});
+
+						contextMenu.createOption({
+							isDisabled: false,
+							text: 'Geoproceso',
+							onclick: (option) => {
+								openGeoprocesos();
+								mapa.closePopup(contextPopup);
+							}
+						});
 						
 						contextMenu.createOption({
 							isDisabled: false,
