@@ -1,6 +1,7 @@
 var baseLayers = {};
 var baseLayersInfo = {};
 var selectedBasemap = null;
+var geoProcessingTabForm = new FormGeoprocesos();
 const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
   impresorBaseMap = new ImpresorCapasBaseHTML(),
   impresorGroup = new ImpresorGrupoHTML(),
@@ -215,10 +216,9 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
                   gestorMenu.addFolders(item.seccion, item.folders);
                 }
                 break;
-                case "tab":
+              case "tab":
                 gestorMenu.addTab(tab);
-
-                break;
+              break;
               default:
                 let sourceTypeUndefined = "The 'type' parameter is not set for the source:" + item.host;
             }
@@ -368,8 +368,7 @@ async function loadTemplate(data, isDefaultTemplate) {
         const sidebarTool = new SidebarTools;
         sidebarTool.createComponent();
 
-        const form = new FormGeoprocesos
-        form.createTabContent()
+        geoProcessingTabForm.createTabContent();
         
         setProperStyleToCtrlBtns();
       }

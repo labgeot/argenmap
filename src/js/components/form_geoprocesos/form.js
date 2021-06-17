@@ -8,10 +8,52 @@ let formularioHTML = `<form>
         <option>Perfil de elevación</option>
     </select>
     <br>
-  <button type="submit" class="btn btn-primary">execute</button>
+  <button type="submit" class="btn btn-primary">Ejecutar</button>
 </form>`
 
+const geoprocessingOptions = [
+  {
+    name: 'Buffer de un punto',
+    fields: [
+      {
+        name: 'Punto',
+        type: 'select',
+        references: 'drawedLayers',
+        allowedTypes: ['marker', 'circlemarker']
+      }
+    ]
+  },
+  {
+    name: 'Buffer de una capa',
+    fields: [
+      {
+        name: 'Capa',
+        type: 'select',
+        references: 'drawedLayers',
+        allowedTypes: ['rectangle', 'polygon']
+      }
+    ]
+  },
+  {
+    name: 'Curvas de nivel',
+    fields: [
+      {
+        name: 'Capa',
+        type: 'select',
+        references: 'drawedLayers',
+        allowedTypes: ['rectangle', 'polygon']
+      }
+    ]
+  },
+  {
+    name: 'Perfil de elevación',
+    fields: []
+  }
+]
+
 class FormGeoprocesos{
+
+  selectedGeoprocess = null;
 
   createElement(element, id, className) {
     let aux = document.createElement(element);
@@ -68,6 +110,32 @@ class FormGeoprocesos{
     content.innerHTML = formularioHTML
     content.append(div)
     console.log(content)
+  }
+
+  buildForm() {
+    const container = document.createElement('div');
+    const form = document.createElement('form');
+
+    const selectLabel = document.createElement('label');
+    selectLabel.setAttribute('for', 'sel1');
+    form.appendChild(selectLabel);
+
+    const selectGeoprocess = document.createElement('select');
+    selectGeoprocess.className = 'form-control';
+    selectGeoprocess.id = 'sel1';
+    form.appendChild(this.selectedGeoprocess);
+
+    container.appendChild(form);
+  }
+
+  getTabContent() {
+    //this.buildForm();
+
+    return formularioHTML;
+  }
+
+  startGeoProcess() {
+    console.log('start')
   }
 
 }

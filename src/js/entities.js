@@ -286,7 +286,7 @@ class LayersInfoWMS extends LayersInfo {
                         var item = new Item(capa.nombre, this.section + clearString(capa.nombre), keywordsAux, this.customizedLayers[key]["new_abstract"], capa.titulo, capa, this.getCallback());
                         
                         gestorMenu.setAllLayersAreDeclaredInJson(true);
-                        gestorMenu.setAvailableLayer(capa.nombre);
+                        gestorMenu.setAvailableLayer(capa.nombre, this.type);
                         
                         item.setImpresor(impresorItem);
                         if (itemGroup.getItemByName(this.section + capa.nombre) == null) {
@@ -387,7 +387,7 @@ class LayersInfoWMS extends LayersInfo {
                     item.setLegendImgPreformatted(_gestorMenu.getLegendImgPath());
                     item.setImpresor(impresorItem);
                     items.push(item);
-                    gestorMenu.setAvailableLayer(iName);
+                    gestorMenu.setAvailableLayer(iName, thisObj.type);
                 }
             });
 
@@ -497,7 +497,7 @@ class LayersInfoWMTS extends LayersInfoWMS {
                         var item = new Item(capa.nombre, this.section + clearString(capa.nombre), keywordsAux, this.customizedLayers[key]["new_abstract"], capa.titulo, capa, this.getCallback());
                         
                         gestorMenu.setAllLayersAreDeclaredInJson(true);
-                        gestorMenu.setAvailableLayer(capa.nombre);
+                        gestorMenu.setAvailableLayer(capa.nombre, this.type);
                         gestorMenu.setAvailableWmtsLayer(capa.nombre);
                         
                         item.setImpresor(impresorItem);
@@ -594,10 +594,9 @@ class LayersInfoWMTS extends LayersInfoWMS {
                     item.setLegendImgPreformatted(_gestorMenu.getLegendImgPath());
                     item.setImpresor(impresorItem);
                     items.push(item);
-                    gestorMenu.setAvailableLayer(iName);
+                    gestorMenu.setAvailableLayer(iName, thisObj.type);
                     gestorMenu.setAvailableWmtsLayer(iName);
                 }
-
             });
 
             var groupAux;
@@ -1211,8 +1210,8 @@ class GestorMenu {
         this.baseMapDependencies = baseMapDependencies;
     }
     
-    setAvailableLayer(layer_id) {
-        this.availableLayers.push(layer_id);
+    setAvailableLayer(layer_id, type) {
+        this.availableLayers.push({id: layer_id, type: type});
     }
     
     setAvailableWmtsLayer(layer_id) {
@@ -1279,7 +1278,7 @@ class GestorMenu {
     }
 
     layerIsValid(layer_id) {
-        const idx1 = this.availableLayers.findIndex(layer => layer === layer_id) > -1;
+        const idx1 = this.availableLayers.findIndex(layer => layer.id === layer_id) > -1;
         const idx2 = this.availableBaseLayers.findIndex(layer => layer === layer_id) > -1;
         return idx1 || idx2;
     }
@@ -1938,7 +1937,7 @@ class GestorMenu {
 			itemsToPrint[key].getObjDom().append(itemsToPrint[key].imprimir());
 		}
 	}
-    
+
 	printMenu() {
 		
 		this.processLayersJoin();
@@ -2000,6 +1999,10 @@ class GestorMenu {
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             var target = $(e.target).attr("href") // activated tab object
             var activeTabId = target.replace('#main-menu-tab-', ''); // activated tab id
+            if (activeTabId === 'Geoprocesos') {
+                const geoprocessingTabContent = document.getElementById('main-menu-tab-Geoprocesos');
+                geoprocessingTabContent.innerHTML = geoProcessingTabForm.getTabContent();
+            }
             gestorMenu.setSelectedTab(activeTabId);
             if (gestorMenu._selectedTab.isSearcheable == true) {
                 $('#searchForm').show();
