@@ -1764,7 +1764,8 @@ class GestorMenu {
                 var sClassAux = 'active';
             }
             aSections[this._tabs[key].getExtendedId()] = [];
-            aSections[this._tabs[key].getExtendedId()].push("<div role='tabpanel' class='tab-pane " + sClassAux + "' id='" + this._tabs[key].getExtendedId() + "'>");
+            aSections[this._tabs[key].getExtendedId()].push("<div role='tabpanel' class='tab-pane fade" + sClassAux + "' id='" + this._tabs[key].getExtendedId() + "'>");
+            aSections[this._tabs[key].getExtendedId()].push(this._printSearcher());
             aSections[this._tabs[key].getExtendedId()].push(this._tabs[key].getInitialPrint());
             sClassAux = '';
         }
@@ -1806,15 +1807,18 @@ class GestorMenu {
             } else if (this._selectedTab.getId() == this._tabs[key].id) {
                 var sClassAux = 'active';
             }
-            sInitialHTML += "<li role='presentation' class='" + sClassAux + "'><a href='#" + this._tabs[key].getExtendedId() + "' aria-controls='" + this._tabs[key].getExtendedId() + "' role='tab' data-toggle='tab'>" + this._tabs[key].getContent() + "</a></li>";
+            let img = ""
+            if(app.hasOwnProperty("iconTabs")){
+                const resultado = app.iconTabs.find( tab => tab.id === this._tabs[key].getContent() );
+                img = `<img title="${this._tabs[key].getContent()}" alt="${this._tabs[key].getContent()}" style="${resultado.style}" src=${resultado.svgurl}></img>`
+            } else{img = this._tabs[key].getContent() }
+            let click = `onClick='openTab("${this._tabs[key].getContent()}")'`
+
+            sInitialHTML += "<li "+click+" role='presentation' class='" + sClassAux + "'><a href='#" + this._tabs[key].getExtendedId() + "' aria-controls='" + this._tabs[key].getExtendedId() + "' role='tab' data-toggle='tab'>" + img + "</a></li>";
             sClassAux = '';
         }
         sInitialHTML += "</ul>";
-
-        sInitialHTML += this._printSearcher();
-
         sInitialHTML += "<div class='tab-content'>";
-
         for (var key in aSections) {
             sInitialHTML += aSections[key].join('') + "</div>";
         }

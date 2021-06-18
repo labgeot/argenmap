@@ -42,6 +42,7 @@ class SidebarTools {
   createComponent() {
     const elem = document.createElement("div");
     elem.id = "sidebar-toolbar-icon-left";
+    elem.className = "inactivo"
     elem.innerHTML = this.component;
 
     const elemright = document.createElement("div");
@@ -58,7 +59,7 @@ class SidebarTools {
         } else {
           this.style.left = "46px";
         }
-
+        this.className = "inactivo"
         areHiddenLeft = false;
         zoomhome[0].hidden = false;
         fullscreen[0].style.display = "";
@@ -69,6 +70,7 @@ class SidebarTools {
         screenshot.style.display = "";
         divbar[2].hidden = false;
       } else {
+        this.className = "activo"
         this.style.left = "10px";
         areHiddenLeft = true;
         zoomhome[0].hidden = true;

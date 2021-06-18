@@ -566,3 +566,12 @@ function setProperStyleToCtrlBtns() {
         }
     }, 100);
 };
+
+function openTab(id) {
+    let contentid = "main-menu-tab-"+ id
+    let container = document.getElementById(contentid)
+    if(container.className === "tab-pane active"){
+        container.className ="tab-pane"
+    }else{container.className = "tab-pane active"}
+  
+  }

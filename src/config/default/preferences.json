@@ -24,5 +24,17 @@
       "max": 21
     }
   },
-  "showSearchBar": false
+  "showSearchBar": true,
+  "iconTabs":[
+    {
+      "id":"Capas",
+      "svgurl": "src/config/default/styles/images/layers.svg",
+      "style": "margin:10px; width:20px; filter: drop-shadow(1px 1px 1px #103847);"
+    },
+    {
+      "id":"Geoprocesos",
+      "svgurl":"src/config/default/styles/images/globe.svg",
+      "style":"margin:10px; width:20px; filter: drop-shadow(1px 1px 1px #103847);"
+    }
+  ]
 }

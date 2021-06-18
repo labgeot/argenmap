@@ -109,7 +109,6 @@ class FormGeoprocesos{
     let div = document.createElement("div")
     content.innerHTML = formularioHTML
     content.append(div)
-    console.log(content)
   }
 
   buildForm() {
