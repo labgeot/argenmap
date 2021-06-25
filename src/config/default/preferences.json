@@ -24,5 +24,14 @@
       "max": 21
     }
   },
-  "showSearchBar": false
+  "showSearchBar": false,
+  "geoprocessing": {
+    "baseUrl": "http://172.20.205.70:8080/geoserver/ows?service=WPS&version=1.0.0",
+    "availableProcesses": [
+      {
+        "name": "Curvas de Nivel",
+        "geoprocess": "contour"
+      }
+    ]
+  }
 }

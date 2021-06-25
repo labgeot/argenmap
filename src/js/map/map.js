@@ -4,7 +4,7 @@ var atrib_ign = "<a href='https://www.ign.gob.ar/AreaServicios/Argenmap/Introduc
     layerName,
     layerData;
 var argenmap = "";
-var mapa = "";
+var mapa = {};
 
 let currentBaseMap = null;
 
@@ -435,6 +435,8 @@ $("body").on("pluginLoad", function(event, plugin){
 						mapa.editableLayers[type].push(layer);
 
 						drawnItems.addLayer(layer);
+
+						mapa.methodsEvents['add-layer'].forEach(method => method(mapa.editableLayers));
 						
 						if (layer.type === 'marker') {
 							//Default marker styles
@@ -474,6 +476,7 @@ $("body").on("pluginLoad", function(event, plugin){
 								}
 							}
 						})
+						mapa.methodsEvents['delete-layer'].forEach(method => method(mapa.editableLayers));
 					});
 
 					mapa.on('draw:drawstop', (e) => {
@@ -521,6 +524,10 @@ $("body").on("pluginLoad", function(event, plugin){
 						mapa.openPopup(contextPopup);
 					});
 
+					mapa.addMethodToEvent = (method, event) => {
+						mapa.methodsEvents[event].push(method);
+					};
+
 					mapa.addSelectionLayersMenuToLayer = (layer) => {
 						const popUpDiv = mapa.createPopUp(layer);
 						layer.bindPopup(popUpDiv);
@@ -530,6 +537,18 @@ $("body").on("pluginLoad", function(event, plugin){
 							const popUpDiv = mapa.createPopUp(mapa.editableLayers[layer.type].find(lyr => lyr.name === layer.name));
 							layer.bindPopup(popUpDiv);
 						});
+					}
+
+					mapa.centerLayer = (layer) => {
+						if (!layer) {
+							return new UserMessage('La capa ya no se encuentra disponible.', true, 'error');;
+						}
+
+						if (layer.type === 'marker' || layer.type === 'circlemarker') {
+							mapa.fitBounds(L.latLngBounds([layer.getLatLng()]));
+						} else {
+							mapa.fitBounds(layer.getBounds());
+						}
 					}
 
 					mapa.addContextMenuToLayer = (layer) => {
@@ -569,11 +588,7 @@ $("body").on("pluginLoad", function(event, plugin){
 							text: 'Acercar',
 							onclick: (option) => {
 								mapa.closePopup(contextPopup);
-								if (layer.type === 'marker' || layer.type === 'circlemarker') {
-									mapa.fitBounds(L.latLngBounds([layer.getLatLng()]));
-								} else {
-									mapa.fitBounds(layer.getBounds());
-								}
+								mapa.centerLayer(layer);
 							}
 						});
 
@@ -1465,6 +1480,8 @@ $("body").on("pluginLoad", function(event, plugin){
 							if (lyrInGrpIdx >= 0)
 								mapa.groupLayers[group].splice(lyrInGrpIdx, 1);
 						}
+
+						mapa.methodsEvents['delete-layer'].forEach(method => method(mapa.editableLayers))
 					}
 
 					mapa.removeGroup = (group, deleteLayers) => {
@@ -1863,6 +1880,12 @@ $("body").on("pluginLoad", function(event, plugin){
 				minZoom: app.hasOwnProperty('mapConfig') ? app.mapConfig.zoom.min : DEFAULT_MIN_ZOOM_LEVEL,
 				maxZoom: app.hasOwnProperty('mapConfig') ? app.mapConfig.zoom.max: DEFAULT_MAX_ZOOM_LEVEL
 			});
+
+			//Available events
+			mapa.methodsEvents = {
+				'add-layer': [],
+				'delete-layer': []
+			};
 
 			setValidZoomLevel(selectedBasemap.nombre);
 

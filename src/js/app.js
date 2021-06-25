@@ -1,7 +1,7 @@
 var baseLayers = {};
 var baseLayersInfo = {};
 var selectedBasemap = null;
-var geoProcessingTabForm = new FormGeoprocesos();
+var geoProcessingManager = new Geoprocessing();
 const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
   impresorBaseMap = new ImpresorCapasBaseHTML(),
   impresorGroup = new ImpresorGrupoHTML(),
@@ -47,6 +47,10 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
       
       if (app.hasOwnProperty('charts')) {
         setCharts(app.charts.isActive);
+      }
+
+      if (app.hasOwnProperty('geoprocessing')) {
+        geoProcessingManager.setAvailableGeoprocessingConfig(app.geoprocessing);
       }
 
       await this._startModules();
@@ -368,7 +372,7 @@ async function loadTemplate(data, isDefaultTemplate) {
         const sidebarTool = new SidebarTools;
         sidebarTool.createComponent();
 
-        geoProcessingTabForm.createTabContent();
+        /* geoProcessingTabForm.createTabContent(); */
         
         setProperStyleToCtrlBtns();
       }

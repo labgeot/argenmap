@@ -2001,7 +2001,8 @@ class GestorMenu {
             var activeTabId = target.replace('#main-menu-tab-', ''); // activated tab id
             if (activeTabId === 'Geoprocesos') {
                 const geoprocessingTabContent = document.getElementById('main-menu-tab-Geoprocesos');
-                geoprocessingTabContent.innerHTML = geoProcessingTabForm.getTabContent();
+                geoprocessingTabContent.innerHTML = '';
+                geoprocessingTabContent.appendChild(geoProcessingManager.getForm());
             }
             gestorMenu.setSelectedTab(activeTabId);
             if (gestorMenu._selectedTab.isSearcheable == true) {
