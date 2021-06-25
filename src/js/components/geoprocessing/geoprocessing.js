@@ -2,7 +2,7 @@ const geoprocessing = {
   'contour': GeoserviceFactory.Contour
 }
 
-class Geoprocessing{
+class Geoprocessing {
 
   formContainer = null;
   geoprocessId = null;
