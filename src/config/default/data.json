@@ -113,7 +113,15 @@
         "content": "Geoprocesos"
       },
       "type": "tab"
-    }
+    },
+    {
+      "tab": {
+      "id": "Geometrias",
+      "searcheable": false,
+      "content": "Geometrias"
+    },
+    "type": "tab"
+  }
   ],
   "template": "ign-geoportal-basic"
 }

@@ -1,5 +1,5 @@
 let formularioHTML = `<form>
-  <div class="form-group">
+  <div style="background-color:white;"class="form-group">
       <label for="sel1">Seleccionar</label>
       <select class="form-control" id="sel1">
         <option>Buffer de un punto</option>

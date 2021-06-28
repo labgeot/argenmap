@@ -568,10 +568,17 @@ function setProperStyleToCtrlBtns() {
 };
 
 function openTab(id) {
+    
+    let sidebar = document.getElementById("sidebar")
     let contentid = "main-menu-tab-"+ id
     let container = document.getElementById(contentid)
     if(container.className === "tab-pane active"){
         container.className ="tab-pane"
-    }else{container.className = "tab-pane active"}
+        if (window.matchMedia("(min-width: 1080px)").matches){sidebar.style.width = "20px"}
+    }else{
+        container.className = "tab-pane active"
+        sidebar.style.width = "auto"
+    }
+    
   
   }

@@ -409,6 +409,7 @@ $("body").on("pluginLoad", function(event, plugin){
 
 					mapa.on('draw:created', (e) => {
 						const layer = e.layer;
+						
 						const type = e.layerType;
 
 						let name = type + '_';
@@ -447,6 +448,8 @@ $("body").on("pluginLoad", function(event, plugin){
 							mapa.addSelectionLayersMenuToLayer(layer);
 						}
 						mapa.addContextMenuToLayer(layer);
+						let addLayeronMenu = new TabGeometry
+						addLayeronMenu.createGeometryLayer("Geometria",layer.name)
 					});
 
 					mapa.on('draw:edited', (e) => {
@@ -573,6 +576,7 @@ $("body").on("pluginLoad", function(event, plugin){
 									mapa.fitBounds(L.latLngBounds([layer.getLatLng()]));
 								} else {
 									mapa.fitBounds(layer.getBounds());
+									console.log(layer)
 								}
 							}
 						});
