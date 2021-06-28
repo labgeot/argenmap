@@ -8,60 +8,12 @@ class Geoprocessing {
   geoprocessId = null;
   geoprocessingConfig = null;
   geoprocessing = null;
-  optionContentForm = null;
+  optionsForm = null;
+  fieldsToReferenceLayers = [];
 
   setAvailableGeoprocessingConfig(geoprocessingConfig) {
     this.geoprocessingConfig = geoprocessingConfig;
   }
-
-  /* createElement(element, id, className) {
-    let aux = document.createElement(element);
-    if (id) {
-      aux.id = id;
-    }
-    if (className) {
-      aux.className = className;
-    }
-    return aux;
-  }
-
-  createModal() {
-    let divContainer = this.createElement(
-      "div",
-      "modalGeoprocesos",
-      "modalGeoprocesos"
-    );
-    divContainer.appendChild(this.createElement("div", "icons-modalfile"));
-  
-    document.body.appendChild(divContainer);
-
-    let btnclose = this.createElement(
-      "a",
-      "btnclose-icon-modalfile",
-      "icon-modalfile"
-    );
-    btnclose.innerHTML =
-      '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>';
-    btnclose.onclick = function () {
-      document.body.removeChild(modalGeoprocesos);
-      document.getElementById("iconopenfile-container").disabled = false;
-      document.getElementById("modalgeojson").style.color = "black";
-      geojsonfile = "";
-    };
-
-    let spantitle = this.createElement(
-      "span",
-      "title-icon-modalfile",
-      "icon-modalfile"
-    );
-    spantitle.innerHTML = "Geoprocesos";
-    document.getElementById("icons-modalfile").append(spantitle);
-    document.getElementById("icons-modalfile").append(btnclose);
-
-    let formulario = this.createElement("div", "formgeo");
-    formulario.innerHTML = formularioHTML
-    document.getElementById("modalGeoprocesos").append(formulario);
-  } */
 
   createTabContent(){
     /* let content = document.getElementById("main-menu-tab-Geoprocesos")
@@ -81,104 +33,100 @@ class Geoprocessing {
   }
 
   updateReferencedDrawedLayers(layers) {
-    if (!this.optionContentForm)
+    if (!this.optionsForm)
       return;
-    
-    Array.from(this.optionContentForm.childNodes).forEach(element => {
+
+    this.fieldsToReferenceLayers.forEach(fieldId => {
+      const element = this.optionsForm.getElement(fieldId);
       if (element.hasAttribute('references') && element.getAttribute('references') === 'drawedLayers') {
-        element.innerHTML = '';
-        element.appendChild(this.createOption('', ''));
+        const options = [];
+        options.push({value: '', text: ''});
         const layerTypes = element.getAttribute('layerTypes').split(',');
         layerTypes.forEach(type => {
           if (layers.hasOwnProperty(type)) {
             layers[type].forEach(layer => {
-              element.appendChild(this.createOption(layer.name, layer.name));
+              options.push({value: layer.name, text: layer.name});
             });
           }
         });
+        this.optionsForm.setOptionsToSelect(fieldId, options);
       }
     });
   }
 
-  createOption(value, text) {
-    const option = document.createElement('option');
-    option.value = value;
-    option.text = text;
-    return option;
-  }
-
   buildOptionForm(fields) {
-    this.optionContentForm.innerHTML = '';
+    this.optionsForm.clearForm();
+    this.fieldsToReferenceLayers = [];
     const formFields = [];
 
     fields.forEach(field => {
 
-      const name = field.name.toLowerCase().replace(/\s/g, "");
-      const elementLabel = document.createElement('label');
-      elementLabel.setAttribute('for', name);
-      elementLabel.innerHTML = field.name;
-      this.optionContentForm.appendChild(elementLabel);
+      const id = field.name.toLowerCase().replace(/\s/g, "");
 
       switch (field.element) {
         case 'select': {
+          const selectId = `select-${id}`;
 
-          const element = document.createElement('select');
-          element.className = 'geoprocessing-form-input';
-          element.id = name;
-          formFields.push(element);
+          const options = [];
+          options.push({value: '', text: ''});
 
-          element.appendChild(this.createOption('', ''));
-
-          element.addEventListener("change", (e) => {
-            if (!element.value)
-              return;
-            
-            const layer = mapa.getEditableLayer(element.value);
-            mapa.centerLayer(layer);
-          });
-
+          const extraProps = {};
+          extraProps.title = field.name;
           if (field.references === 'drawedLayers') {
-            element.setAttribute('references', 'drawedLayers');
-            element.setAttribute('layerTypes', field.allowedTypes);
+            this.fieldsToReferenceLayers.push(selectId);
+            extraProps.references = 'drawedLayers';
+            extraProps.layerTypes = field.allowedTypes;
             const editableLayers = mapa.getEditableLayers();
             field.allowedTypes.forEach(type => {
               editableLayers[type].forEach(layer => {
-                element.appendChild(this.createOption(layer.name, layer.name));
+                options.push({value: layer.name, text: layer.name});
               });
             });
           }
 
-          this.optionContentForm.appendChild(element);
+          const select = this.optionsForm.addElement('select', selectId, {
+            title: field.name,
+            events: {
+              'change': (element) => {
+                if (!element.value)
+                  return;
+                const layer = mapa.getEditableLayer(element.value);
+                mapa.centerLayer(layer);
+              }
+            },
+            extraProps: extraProps
+          });
+          this.optionsForm.setOptionsToSelect(selectId, options);
+
+          formFields.push(select);
         };
         break;
         case 'input': {
-          const element = document.createElement('input');
-          element.className = 'geoprocessing-form-input';
-          element.id = name;
-          element.type = field.type;
-          formFields.push(element);
-
+          const extraProps = {};
+          extraProps.type = field.type;
+          extraProps.title = field.name;
           if (field.hasOwnProperty('min')) {
-            element.min = field.min;
+            extraProps.min = field.min;;
           }
           if (field.hasOwnProperty('max')) {
-            element.max = field.max;
+            extraProps.max = field.max;
           }
-          this.optionContentForm.appendChild(element);
+          const inputId = `input-${id}`;
+          const input = this.optionsForm.addElement('input', inputId, {
+            title: field.name,
+            extraProps: extraProps
+          });
+
+          formFields.push(input);
         }
       }
     });
 
-    const executeBtn = document.createElement('div');
-    executeBtn.className = 'geoprocessing-btn non-selectable-text';
-    executeBtn.innerHTML = 'Ejecutar';
-    executeBtn.onclick = (e) => {
-      e.preventDefault();
-
+    this.optionsForm.addButton('Ejecutar', () => {
       const values = [];
       for (let i = 0; i < formFields.length; i++) {
         if (!formFields[i].value) {
-          return new UserMessage(`El campo ${formFields[i].id} está vacío.`, true, 'error');
+          return new UserMessage(`El campo '${formFields[i].title}' está vacío.`, true, 'error');
         }
 
         if (formFields[i].hasAttribute('references') && formFields[i].getAttribute('references') === 'drawedLayers') {
@@ -200,7 +148,6 @@ class Geoprocessing {
           values.push(+formFields[i].value);
         }
       }
-
       this.geoprocessing.execute(...values)
       .then(result => {
         this.displayResult(result);
@@ -208,48 +155,42 @@ class Geoprocessing {
       .catch(error => {
         new UserMessage(error.message, true, 'error');
       });
-    }
-    this.optionContentForm.appendChild(executeBtn);
+    });
   }
 
   buildForm() {
+    const geoprocessingForm = new FormBuilder();
+
     const container = document.createElement('div');
     container.className = 'geoprocessing-form-container';
-    const form = document.createElement('form');
-    form.className = 'geoprocessing-form';
 
-    const selectLabel = document.createElement('label');
-    selectLabel.setAttribute('for', 'sel1');
-    selectLabel.innerHTML = 'Seleccione el geoproceso';
-    form.appendChild(selectLabel);
+    container.appendChild(geoprocessingForm.form);
 
-    const selectGeoprocess = document.createElement('select');
-    selectGeoprocess.className = 'geoprocessing-form-input';
-    selectGeoprocess.id = 'sel1';
-    selectGeoprocess.addEventListener("change", (e) => {
-      if (!selectGeoprocess.value) {
-        this.optionContentForm.innerHTML = '';
-        return;
+    const selectProcessId = 'select-process';
+    geoprocessingForm.addElement('select', selectProcessId, {
+      title: 'Seleccione el geoproceso',
+      events: {
+        'change': (element) => {
+          if (!element.value) {
+            this.optionsForm.clearForm();
+            return;
+          }
+          this.geoprocessId = element.value;
+          this.geoprocessing = new geoprocessing[element.value](this.geoprocessingConfig.baseUrl);
+          this.buildOptionForm(this.geoprocessing.getFields());
+        }
       }
-
-      this.geoprocessId = selectGeoprocess.value;
-      this.geoprocessing = new geoprocessing[selectGeoprocess.value](this.geoprocessingConfig.baseUrl);
-      this.buildOptionForm(this.geoprocessing.getFields());
     });
-    form.appendChild(selectGeoprocess);
 
-    selectGeoprocess.appendChild(this.createOption('', ''));
-
+    const options = [];
+    options.push({value: '', text: ''});
     this.geoprocessingConfig.availableProcesses.forEach(geoprocess => {
-      selectGeoprocess.appendChild(this.createOption(geoprocess.geoprocess, geoprocess.name));
+      options.push({value: geoprocess.geoprocess, text: geoprocess.name});
     });
+    geoprocessingForm.setOptionsToSelect(selectProcessId, options);
 
-    const optionContentForm = document.createElement('form');
-    optionContentForm.className = 'geoprocessing-form';
-    this.optionContentForm = optionContentForm;
-
-    container.appendChild(form);
-    container.appendChild(optionContentForm);
+    this.optionsForm = new FormBuilder();
+    container.appendChild(this.optionsForm.form);
 
     return container;
   }
@@ -263,34 +204,4 @@ class Geoprocessing {
 
     return this.formContainer;
   }
-
-  /* getTabContent() {
-    //this.buildForm();
-    let contour = new GeoserviceFactory.Contour(
-      "http://172.20.205.70:8080/geoserver/ows?service=WPS&version=1.0.0"
-    );
-    console.log(contour.getFields());
-    contour
-    .execute(-69.84479, -34.17065, -69.82531, -34.15469, 100)
-    .then((result) => {
-      console.log(result);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-
-    //return formularioHTML;
-    return this.buildForm();
-  } */
-
-  /* startGeoProcess() {
-    console.log('start')
-  } */
-
 }
-
-/* function openGeoprocesos(){
-  let formgeoprocesos = new FormGeoprocesos
-  formgeoprocesos.createModal()
-}
- */

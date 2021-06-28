@@ -2,9 +2,27 @@ class FormBuilder {
     form = null;
     elements = {};
 
-    constructor() {
+    constructor(id) {
         this.form = document.createElement('form');
         this.form.className = 'form';
+        if (id)
+            this.form.id = id;
+    }
+
+    get form() {
+        return this.form;
+    }
+
+    getElement(id) {
+        if (!this.elements.hasOwnProperty(id)) {
+            return null;
+        }
+        return this.elements[id];
+    }
+
+    clearForm() {
+        this.form.innerHTML = '';
+        this.elements = {};
     }
 
     addProps(element, props) {
@@ -17,14 +35,14 @@ class FormBuilder {
         for (const eventKey in events) {
             element.addEventListener(eventKey, (e) => {
                 e.preventDefault();
-                events[eventKey](element.value);
+                events[eventKey](element);
             });
         }
     }
 
     addButton(name, onclick) {
         const button = document.createElement('div');
-        button.className = 'form-button';
+        button.className = 'form-button non-selectable-text';
         button.innerHTML = name;
         button.onclick = () => {
             onclick();
@@ -53,6 +71,8 @@ class FormBuilder {
         if (options.hasOwnProperty('events')) {
             this.addEvents(element, options.events);
         }
+
+        return element;
     }
 
     getElementValue(id) {
