@@ -42,7 +42,7 @@ const changeMarkerStyles = (layer, borderWidth, borderColor, fillColor) => {
 // Mapa base actual de ArgenMap (Geoserver)
 var unordered = '';
 var ordered = ['','','','','','','','',''];
-var ordenZoomHome = 1; var ordenLocate = 2; var ordenFullScreen = 3; var ordenGraticula = 4; var ordenMeasure = 5; var ordenDraw = 6; var ordenBetterScale = 7; var ordenMinimap = 8; var ordenPrint = 9;
+var ordenZoomHome = 1; var ordenLocate = 2; var ordenFullScreen = 3; var ordenGraticula = 4; var ordenMeasure = 5; var ordenDraw = 6; var ordenBetterScale = 7; var ordenMinimap = 8; var ordenPrint = 9; var ordenElevation = 10;
 var visiblesActivar = true;
 $("body").on("pluginLoad", function(event, plugin){
 	unordered = '';
@@ -81,6 +81,9 @@ $("body").on("pluginLoad", function(event, plugin){
 			break;
 		case 'FullScreen':
 			ordered.splice(ordenFullScreen, 1, plugin.pluginName);
+			break;
+		case 'elevation':
+			ordered.splice(ordenElevation, 1, plugin.pluginName);
 			break;
 		default :
 			// Add unordered plugins
@@ -127,6 +130,10 @@ $("body").on("pluginLoad", function(event, plugin){
 	}
 	if(visiblesActivar && gestorMenu.pluginExists('minimap')) {
 		if(gestorMenu.plugins['minimap'].getStatus() == 'ready' || gestorMenu.plugins['minimap'].getStatus() == 'fail'){
+		} else { visiblesActivar = false; }
+	}
+	if(visiblesActivar && gestorMenu.pluginExists('elevation')) {
+		if(gestorMenu.plugins['elevation'].getStatus() == 'ready' || gestorMenu.plugins['elevation'].getStatus() == 'fail'){
 		} else { visiblesActivar = false; }
 	}
 	if(visiblesActivar){
@@ -329,6 +336,9 @@ $("body").on("pluginLoad", function(event, plugin){
                     }).addTo(mapa);
                     */
 					break;
+				case 'elevation': {
+				}
+				break;
 				case 'Draw':
 				    var drawnItems = L.featureGroup().addTo(mapa);
 
@@ -528,6 +538,57 @@ $("body").on("pluginLoad", function(event, plugin){
 						mapa.methodsEvents[event].push(method);
 					};
 
+					mapa.displayElevationProfile = (layer) => {
+						var elevation_options = {
+							// Default chart colors: theme lime-theme, magenta-theme, ...
+							theme: "lightblue-theme",
+							// Chart container outside/inside map container
+							detached: true,
+							// if (detached), the elevation chart container
+							elevationDiv: "#containerDiv",
+							// if (!detached) autohide chart profile on chart mouseleave
+							autohide: false,
+							// if (!detached) initial state of chart profile control
+							collapsed: false,
+							// if (!detached) control position on one of map corners
+							position: "topright",
+							// Autoupdate map center on chart mouseover.
+							followMarker: true,
+							// Autoupdate map bounds on chart update.
+							autofitBounds: true,
+							// Chart distance/elevation units.
+							imperial: false,
+							// [Lat, Long] vs [Long, Lat] points. (leaflet default: [Lat, Long])
+							reverseCoords: false,
+							// Acceleration chart profile: true || "summary" || "disabled" || false
+							acceleration: false,
+							// Slope chart profile: true || "summary" || "disabled" || false
+							slope: false,
+							// Speed chart profile: true || "summary" || "disabled" || false
+							speed: false,
+							// Display time info: true || "summary" || false
+							time: false,
+							// Display distance info: true || "summary"
+							distance: true,
+							// Display altitude info: true || "summary"
+							altitude: true,
+							// Summary track info style: "line" || "multiline" || false
+							summary: 'multiline',
+							// Toggle chart ruler filter.
+							ruler: true,
+							// Toggle chart legend filter.
+							legend: true,
+							// Toggle "leaflet-almostover" integration
+							almostOver: true,
+							// Toggle "leaflet-distance-markers" integration
+							distanceMarkers: false,
+							// Render chart profiles as Canvas or SVG Paths
+							preferCanvas: true
+						};
+						const controlElevation = L.control.elevation(elevation_options).addTo(mapa);
+						controlElevation.load(layer);
+					};
+
 					mapa.addSelectionLayersMenuToLayer = (layer) => {
 						const popUpDiv = mapa.createPopUp(layer);
 						layer.bindPopup(popUpDiv);
@@ -612,14 +673,14 @@ $("body").on("pluginLoad", function(event, plugin){
 							}
 						});
 
-						contextMenu.createOption({
+						/* contextMenu.createOption({
 							isDisabled: false,
 							text: 'Geoproceso',
 							onclick: (option) => {
 								openGeoprocesos();
 								mapa.closePopup(contextPopup);
 							}
-						});
+						}); */
 						
 						contextMenu.createOption({
 							isDisabled: false,
@@ -1729,6 +1790,19 @@ $("body").on("pluginLoad", function(event, plugin){
 								const invertedCoords = geoJSON.geometry.coordinates.map(coords => [coords[1], coords[0]]);
 								layer = L.polyline(invertedCoords, options);
 								type = 'polyline';
+
+								if (geoJSON.hasOwnProperty('properties') && geoJSON.properties.hasOwnProperty('value')) {
+									layer.bindPopup('Elevación: ' + geoJSON.properties.value + 'm');
+									layer.on('mouseover', function (e) {
+										//layer.setText(geoJSON.properties.value + 'm', { center: true, orientation: 'flip' });
+										layer.openPopup();
+									});
+									layer.on('mouseout', function (e) {
+										//layer.setText(null);
+										layer.closePopup();
+									});
+								}
+								console.log(geoJSON)
 							}
 							break;
 							case 'polygon': {

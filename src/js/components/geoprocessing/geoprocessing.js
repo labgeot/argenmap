@@ -25,7 +25,7 @@ class Geoprocessing {
   displayResult(result) {
     switch (this.geoprocessId) {
       case 'contour': {
-        mapa.addGeoJsonLayerToDrawedLayers(result, 'a', false);
+        mapa.addGeoJsonLayerToDrawedLayers(result, 'contourResult', false);
       }
       break;
     }
@@ -201,7 +201,6 @@ class Geoprocessing {
       mapa.addMethodToEvent(this.updateReferencedDrawedLayers.bind(this), 'add-layer');
       mapa.addMethodToEvent(this.updateReferencedDrawedLayers.bind(this), 'delete-layer');
     }
-
     return this.formContainer;
   }
 }

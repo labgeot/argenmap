@@ -121,6 +121,12 @@ Menu principal
 .nav-tabs {
   background-color: #008dc9;
   border-bottom: 1px solid #ddd;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 .nav-tabs > .active {
   background-color: transparent !important;
