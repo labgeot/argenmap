@@ -1943,11 +1943,37 @@ class GestorMenu {
 		this.processLayersJoin();
 		
 		if (this._hasMoreTabsThanOne()) {
-            
+
             this._printWithTabs();
+            
+            if(!app.template_id==="argenmap-leaflet-idera-tpl"){
+                var itemsAux = new Array();
+                var itemsIterator = this._itemsGetter.get(this);
+                for (var key in itemsIterator) {
+                    itemsAux.push(itemsIterator[key]);
+                }
+                itemsAux.sort(this.ordenaPorPeso);
+        
+                var itemsAuxToFolders = new Array(); //Array with items and folders
+                for (var key in itemsAux) {
+
+                    var itemComposite = itemsAux[key];
+                    itemComposite.setQuerySearch(this.getQuerySearch()); //Set query search for filtering items
+
+                    if ($('#' + itemComposite.seccion).length != 0) {
+                        itemComposite.getObjDom().html('');
+                        
+                    }
+                    itemComposite.setObjDom("#main-menu-tab-"+itemComposite.tab.id)
+                    itemsAuxToFolders.push(itemComposite);
+                }
+        
+            //Generate logical folders
+            this.generateFolders(itemsAuxToFolders);
+            }
 
         } else {
-
+            
             this.getMenuDOM().html(this._printSearcher());
 
             var itemsAux = new Array();
@@ -1966,8 +1992,8 @@ class GestorMenu {
                 if ($('#' + itemComposite.seccion).length != 0) {
                     itemComposite.getObjDom().html('');
                 }
-				
-				itemsAuxToFolders.push(itemComposite);
+
+                itemsAuxToFolders.push(itemComposite);
             }
 			
 			//Generate logical folders
