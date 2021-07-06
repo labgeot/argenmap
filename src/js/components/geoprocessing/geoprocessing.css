@@ -1,3 +1,12 @@
+.icon-layer-geo{
+  color:silver;
+  margin-left:  15px;
+}
+
+.icon-layer-geo :hover{
+  color: black
+}
+
 #modalGeoprocesos{
   width: 450px;
   max-height: 450px;
@@ -22,6 +31,7 @@
 }
 
 .geoprocessing-form-container {
+  background-color: white;
   padding: 5px;
   display: flex;
   flex-direction: column;

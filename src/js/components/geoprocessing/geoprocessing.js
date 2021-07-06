@@ -1,6 +1,7 @@
 const geoprocessing = {
   'contour': GeoserviceFactory.Contour
 }
+let result = 0
 
 class Geoprocessing {
 
@@ -25,7 +26,11 @@ class Geoprocessing {
   displayResult(result) {
     switch (this.geoprocessId) {
       case 'contour': {
-        mapa.addGeoJsonLayerToDrawedLayers(result, 'contourResult', false);
+        let layername = 'contourResult_'+result
+        result +=1
+        mapa.addGeoJsonLayerToDrawedLayers(result, layername, false);
+        let item_GestorMenu = new Item_GestorMenu_UI
+        item_GestorMenu.createElement("Geoprocesos", layername)
       }
       break;
     }

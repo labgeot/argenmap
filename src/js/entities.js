@@ -2297,3 +2297,51 @@ class Tab {
         return '';
     }
 }
+
+/******************************************
+Item for Gestor Menu
+******************************************/
+class Item_GestorMenu_UI{
+    createElement(groupname, layer){
+        let main = document.getElementById(groupname)
+        let itemnew = document.createElement("div")
+
+        let div = ` 
+        <div style="display:flex; flex-direction:row;">
+        <div style="cursor: pointer; width: 70%"><span>${layer}</span></div>
+        <div class="icon-layer-geo" ><i class="fas fa-download" title="descargar"></i></div>
+        <div class="icon-layer-geo" ><i class="far fa-trash-alt" title="eliminar"></i></div>
+        </div>
+        `
+        if(!main){
+        itemnew.innerHTML =`
+        <div id="${groupname}" class="menu5 panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a id="${groupname}-a" data-toggle="collapse" data-parent="#accordion1" href="#${groupname}-content" class="item-group-title">${groupname}</a>
+            </h4>
+        </div>
+        <div id='${groupname}-content' class="panel-collapse collapse">
+            <div class="panel-body" id ="${groupname}-panel-body"> 
+            <li id="li-${layer}" class="capa list-group-item" onclick="clickGeometryLayer('${layer}')"><div class="capa-title">${div}<span data-toggle2="tooltip" title="" data-original-title=""></span><div class="legend-layer"></div></div></li>
+            </div>
+        </div>
+    </div>`
+
+    let container = document.getElementById("main-menu-tab-Capas")
+    container.insertBefore(itemnew,container.firstChild)
+        }
+        else{
+            let content = document.getElementById(groupname+"-panel-body")
+            let aux = document.createElement("li")
+            aux.id = "li-"+layer 
+            aux.className = "capa list-group-item"
+            aux.onclick = function(){
+                clickGeometryLayer(layer)
+              };
+            aux.innerHTML = `<div class="capa-title"><span data-toggle2="tooltip" title="" data-original-title="">${div}</span><div class="legend-layer"></div></div>`
+            content.appendChild(aux)
+        }
+
+    }
+}
