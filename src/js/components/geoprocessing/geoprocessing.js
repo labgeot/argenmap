@@ -1,7 +1,7 @@
 const geoprocessing = {
   'contour': GeoserviceFactory.Contour
 }
-let result = 0
+let results_counter = 0
 
 class Geoprocessing {
 
@@ -26,11 +26,12 @@ class Geoprocessing {
   displayResult(result) {
     switch (this.geoprocessId) {
       case 'contour': {
-        let layername = 'contourResult_'+result
-        result +=1
+        let layername = 'contourResult_'+results_counter 
+        console.log(layername)
+        results_counter++
         mapa.addGeoJsonLayerToDrawedLayers(result, layername, false);
         let item_GestorMenu = new Item_GestorMenu_UI
-        item_GestorMenu.createElement("Geoprocesos", layername)
+        item_GestorMenu.createElement("Curvas de Nivel", layername)
       }
       break;
     }

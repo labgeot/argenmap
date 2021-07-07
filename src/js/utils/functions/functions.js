@@ -572,10 +572,16 @@ function clickGeometryLayer(layer){
   
     if(aux.className === "capa list-group-item active"){
       aux.className = "capa list-group-item" 
-      mapa.hideLayer(layer)
+      mapa.hideGroupLayer(layer)
     }
     else{
       aux.className = "capa list-group-item active"
-      mapa.showLayer(layer)
+      mapa.showGroupLayer(layer)
     }
+}
+
+function deleteLayerGeometry(layer){
+    mapa.removeGroup(layer, true);
+    let id = "#li-"+layer
+    $(id).remove();
 }
