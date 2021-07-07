@@ -27,7 +27,6 @@ class Geoprocessing {
     switch (this.geoprocessId) {
       case 'contour': {
         let layername = 'contourResult_'+results_counter 
-        console.log(layername)
         results_counter++
         mapa.addGeoJsonLayerToDrawedLayers(result, layername, false);
         let item_GestorMenu = new Item_GestorMenu_UI

@@ -2309,7 +2309,7 @@ class Item_GestorMenu_UI{
 
         let div = ` 
         <div style="display:flex; flex-direction:row;">
-        <div style="cursor: pointer; width: 70%" onclick="clickGeometryLayer('${layer}')"><span>${layer}</span></div>
+        <div style="cursor: pointer; width: 70%" onclick="clickGeometryLayer('${layer}')"><span style="user-select: none;">${layer}</span></div>
         <div class="icon-layer-geo" onclick="mapa.downloadMultiLayerGeoJSON('${layer}')"><i class="fas fa-download" title="descargar"></i></div>
         <div class="icon-layer-geo" onclick="deleteLayerGeometry('${layer}')"><i class="far fa-trash-alt" title="eliminar"></i></div>
         </div>

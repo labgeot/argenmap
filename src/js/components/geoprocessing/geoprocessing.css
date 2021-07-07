@@ -7,6 +7,25 @@
   color: black
 }
 
+.geoprocessing-form-container form select{
+  border: 1px solid #ced4da !important;
+  border-radius: .25rem;
+  outline: none;
+  user-select: none;
+}
+
+.geoprocessing-form-container form label{
+  user-select: none;
+  color: #3f3f3f;
+}
+
+.geoprocessing-form-container form input{
+  border: 1px solid #ced4da !important;
+  border-radius: .25rem;
+  outline: none;
+}
+
+
 #modalGeoprocesos{
   width: 450px;
   max-height: 450px;

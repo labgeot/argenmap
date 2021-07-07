@@ -583,5 +583,14 @@ function clickGeometryLayer(layer){
 function deleteLayerGeometry(layer){
     mapa.removeGroup(layer, true);
     let id = "#li-"+layer
-    $(id).remove();
+    let parent = $(id).parent()[0]
+    
+    if(parent.childElementCount<=1){
+        let index = parent.id.indexOf("-panel-body")
+        let lista = "#lista-"+parent.id.substr(0,index)
+        $(lista).remove();
+    }else{
+        $(id).remove();
+    }
+
 }
