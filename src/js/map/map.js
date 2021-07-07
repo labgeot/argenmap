@@ -1602,6 +1602,7 @@ $("body").on("pluginLoad", function(event, plugin){
 							const styleOptions = { ...layer.options };
 							geoJSON.properties.styles = styleOptions;
 							geoJSON.properties.type = layer.type;
+							if(layer.value)geoJSON.properties.value = layer.value
 							jsonToDownload.features.push(geoJSON);
 						});
 
@@ -1792,6 +1793,7 @@ $("body").on("pluginLoad", function(event, plugin){
 								type = 'polyline';
 
 								if (geoJSON.hasOwnProperty('properties') && geoJSON.properties.hasOwnProperty('value')) {
+									layer.value = geoJSON.properties.value
 									layer.bindPopup('Elevación: ' + geoJSON.properties.value + 'm');
 									layer.on('mouseover', function (e) {
 										//layer.setText(geoJSON.properties.value + 'm', { center: true, orientation: 'flip' });
@@ -1802,7 +1804,6 @@ $("body").on("pluginLoad", function(event, plugin){
 										layer.closePopup();
 									});
 								}
-								console.log(geoJSON)
 							}
 							break;
 							case 'polygon': {
