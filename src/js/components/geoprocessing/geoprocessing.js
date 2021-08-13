@@ -1,5 +1,7 @@
-const geoprocessing = {
-  'contour': GeoserviceFactory.Contour
+
+let geoprocessing = {
+  'contour': GeoserviceFactory.Contour,
+  'elevationProfile': GeoserviceFactory.ElevationProfile
 }
 let results_counter = 0
 
@@ -16,13 +18,6 @@ class Geoprocessing {
     this.geoprocessingConfig = geoprocessingConfig;
   }
 
-  createTabContent(){
-    /* let content = document.getElementById("main-menu-tab-Geoprocesos")
-    let div = document.createElement("div")
-    content.innerHTML = formularioHTML
-    content.append(div) */
-  }
-
   displayResult(result) {
     switch (this.geoprocessId) {
       case 'contour': {
@@ -31,16 +26,23 @@ class Geoprocessing {
         mapa.addGeoJsonLayerToDrawedLayers(result, layername, false);
         let item_GestorMenu = new Item_GestorMenu_UI
         item_GestorMenu.createElement("Curvas de Nivel", layername)
+        break;
       }
+      case 'elevationProfile':{
+        //this.elevationDiv(result)
+        console.log(result.coordinates[0])
+
       break;
+      }
     }
     new UserMessage(`Geoproceso ejecutado exitosamente.`, true, 'information');
   }
 
   updateReferencedDrawedLayers(layers) {
+    
     if (!this.optionsForm)
       return;
-
+    if(this.geoprocessId==="contour"){
     this.fieldsToReferenceLayers.forEach(fieldId => {
       const element = this.optionsForm.getElement(fieldId);
       if (element.hasAttribute('references') && element.getAttribute('references') === 'drawedLayers') {
@@ -58,6 +60,27 @@ class Geoprocessing {
       }
     });
   }
+  if(this.geoprocessId==="elevationProfile"){
+    this.fieldsToReferenceLayers.forEach(fieldId => {
+      const element = this.optionsForm.getElement(fieldId);
+      if (element.hasAttribute('references') && element.getAttribute('references') === 'drawedLayers') {
+        const options = [];
+        options.push({value: '', text: ''});
+        const layerTypes = ["polyline"]
+        layerTypes.forEach(type => {
+          if (layers.hasOwnProperty(type)) {
+            layers[type].forEach(layer => {
+              options.push({value: layer.name, text: layer.name});
+            });
+          }
+        });
+        this.optionsForm.setOptionsToSelect(fieldId, options);
+      }
+    });
+  }
+
+  }
+  
 
   buildOptionForm(fields) {
     this.optionsForm.clearForm();
@@ -82,11 +105,19 @@ class Geoprocessing {
             extraProps.references = 'drawedLayers';
             extraProps.layerTypes = field.allowedTypes;
             const editableLayers = mapa.getEditableLayers();
-            field.allowedTypes.forEach(type => {
-              editableLayers[type].forEach(layer => {
+
+            if(this.geoprocessId==="contour"){
+              field.allowedTypes.forEach(type => {
+                editableLayers[type].forEach(layer => {
+                  options.push({value: layer.name, text: layer.name});
+                });
+                
+              });
+            }else{
+              editableLayers['polyline'].forEach(layer => {
                 options.push({value: layer.name, text: layer.name});
               });
-            });
+            }
           }
 
           const select = this.optionsForm.addElement('select', selectId, {
@@ -128,7 +159,7 @@ class Geoprocessing {
     });
 
     this.optionsForm.addButton('Ejecutar', () => {
-      const values = [];
+      let values = [];
       for (let i = 0; i < formFields.length; i++) {
         if (!formFields[i].value) {
           return new UserMessage(`El campo '${formFields[i].title}' está vacío.`, true, 'error');
@@ -137,35 +168,62 @@ class Geoprocessing {
         if (formFields[i].hasAttribute('references') && formFields[i].getAttribute('references') === 'drawedLayers') {
           const layer = mapa.getEditableLayer(formFields[i].value);
 
-          switch (layer.type) {
-            case 'rectangle': {
+          switch (this.geoprocessId) {
+           case 'contour': {
               const sw = layer.getBounds().getSouthWest();
               values.push(sw.lng);
               values.push(sw.lat);
               const ne = layer.getBounds().getNorthEast();
               values.push(ne.lng);
               values.push(ne.lat);
+              break;
             }
-            break;
+            case 'elevationProfile':{
+              const sw = layer.getBounds().getSouthWest();
+              values.push(sw.lng+" "+sw.lat);
+              const ne = layer.getBounds().getNorthEast();
+              values.push(ne.lng+" "+ne.lat);
+              break;
+            }
           }
 
         } else {
           values.push(+formFields[i].value);
         }
       }
+
+      console.log("values es", values)
+      console.log("geoproceso", this.geoprocessing)
       this.geoprocessing.execute(...values)
       .then(result => {
         this.displayResult(result);
+        values = [];
       })
       .catch(error => {
         new UserMessage(error.message, true, 'error');
       });
+
+      /*
+      const item = this.geoprocessingConfig.availableProcesses.find( e => e.geoprocess === this.geoprocessId );
+      let nuevothisgeoprocessing = ""
+      nuevothisgeoprocessing = new geoprocessing[this.geoprocessId](item.baseUrl);
+      console.log(...values, "valores de values")
+      nuevothisgeoprocessing.execute(...values)
+      .then(result => {
+        this.displayResult(result);
+        values = [];
+      })
+      .catch(error => {
+        new UserMessage(error.message, true, 'error');
+      });
+*/
+
+
     });
   }
 
   buildForm() {
     const geoprocessingForm = new FormBuilder();
-
     const container = document.createElement('div');
     container.className = 'geoprocessing-form-container';
 
@@ -181,7 +239,8 @@ class Geoprocessing {
             return;
           }
           this.geoprocessId = element.value;
-          this.geoprocessing = new geoprocessing[element.value](this.geoprocessingConfig.baseUrl);
+          const item = this.geoprocessingConfig.availableProcesses.find( e => e.geoprocess === this.geoprocessId );
+          this.geoprocessing = new geoprocessing[this.geoprocessId](item.baseUrl);
           this.buildOptionForm(this.geoprocessing.getFields());
         }
       }
@@ -208,4 +267,36 @@ class Geoprocessing {
     }
     return this.formContainer;
   }
+
+  elevationDiv(result){
+    let dive = document.createElement("div")
+        dive.id = "elevation-div"
+        dive.className = "elevation-div"
+        let modal = document.createElement("div")
+        modal.innerHTML =`
+        <div id="ContainerER" class="ContainerTable ui-draggable ui-draggable-handle ui-resizable">
+        <div id="icons-table">
+        <a id="btnclose" class="icon-table"><span onclick='$("#ContainerER").remove();' id="remove" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></div>
+        <div id="elevation-div-results"></div>
+        </div>`
+        document.body.appendChild(modal)
+         let aux = document.getElementById("elevation-div-results")
+         aux.innerHTML = ""
+         aux.append(dive)
+        let otraresp = `{"name":"response","type":"FeatureCollection","features":[{"type":"Feature","geometry":${JSON.stringify(result)},"properties":null}]}`      
+        var opts = {
+            data: otraresp,
+             options: {
+              summary: "inline",
+              detachedView: false,
+              elevationDiv: '#elevation-div',
+              zFollow: 12,
+             legend: false,
+            },
+          }
+        var controlElevation = L.control.elevation(opts.options);
+        controlElevation.addTo(mapa);
+        controlElevation.load(opts.data);
+  }
 }
+
