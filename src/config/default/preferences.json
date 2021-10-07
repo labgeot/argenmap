@@ -26,11 +26,16 @@
   },
   "showSearchBar": false,
   "geoprocessing": {
-    "baseUrl": "http://172.20.205.70:8080/geoserver/ows?service=WPS&version=1.0.0",
     "availableProcesses": [
       {
         "name": "Curvas de Nivel",
-        "geoprocess": "contour"
+        "geoprocess": "contour",
+        "baseUrl": "localhost/geoserver/ows?service=WPS&version=1.0.0"
+      },
+      {
+        "name": "Perfil de Elevacion",
+        "geoprocess": "elevationProfile",
+        "baseUrl": " localhost/geoprocess-backend/elevation-profile"
       }
     ]
   }
