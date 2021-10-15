@@ -416,6 +416,9 @@ async function loadTemplate(data, isDefaultTemplate) {
 
         const sc = new Screenshot;
         sc.createComponent();
+
+        const print = new Print;
+        print.createComponent();
         
         const modalgeojson = new IconModalGeojson;
         modalgeojson.createComponent();

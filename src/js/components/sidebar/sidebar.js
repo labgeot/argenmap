@@ -9,6 +9,7 @@ let abrirarchivo = null;
 let leafletbottom = null;
 let drawb = null;
 let screenshot = null;
+let print = null;
 let divbar = null;
 class SidebarTools {
   constructor() {
@@ -31,6 +32,7 @@ class SidebarTools {
     leafletbottom = document.getElementsByClassName("leaflet-bottom");
     drawb = document.getElementsByClassName("leaflet-top leaflet-right");
     screenshot = document.getElementById("screenshot");
+    print = document.getElementById("print");
     divbar = document.getElementsByClassName("leaflet-bar leaflet-control");
     this.component = `
     <span data-html2canvas-ignore="true" id="sidebar-toolbar-span"class="glyphicon glyphicon-option-vertical" aria-hidden="true">
@@ -65,6 +67,7 @@ class SidebarTools {
         measure[0].hidden = false;
         abrirarchivo.style.display = "";
         screenshot.style.display = "";
+        print.style.display = "";
         divbar[2].hidden = false;
       } else {
         this.style.left = "10px";

@@ -57,7 +57,7 @@ top: 0;
   .leaflet-control-layers-toggle,
   .leaflet-control-customgraticule,
   #modalgeojson,
-  #screenshot {
+  #screenshot,#print {
     width: 26px !important;
     height: 26px !important;
     border: none !important;
