@@ -1451,6 +1451,11 @@ class GestorMenu {
         })
     }
 
+    clearActiveLayers(){
+        let layers = this.getActiveLayersWithoutBasemap().map((item) => { return item.name });
+        this.toggleLayers(layers);
+    }
+
     setMenuDOM(menuDOM) {
         this.menuDOM = menuDOM;
     }
@@ -1783,6 +1788,12 @@ class GestorMenu {
         return '';
     }
 
+    _printCleanLayersButton() {
+        return `
+            <button class="btn btn-sm btn-light" style="width: 100%;" onclick="gestorMenu.clearActiveLayers()">Desactivar todas las capas</button>
+        `;
+    }
+
     getAvailableTags() {
         var availableTags = [];
         for (var key in this.items) {
@@ -1856,7 +1867,7 @@ class GestorMenu {
         sInitialHTML += "</ul>";
 
         sInitialHTML += this._printSearcher();
-
+        sInitialHTML += this._printCleanLayersButton();
         sInitialHTML += "<div class='tab-content'>";
 
         for (var key in aSections) {
@@ -1993,6 +2004,11 @@ class GestorMenu {
         } else {
 
             this.getMenuDOM().html(this._printSearcher());
+            if (document.getElementById('searchForm')) {
+                document.getElementById('searchForm').insertAdjacentHTML("afterend", this._printCleanLayersButton())
+            }else {
+                this.getMenuDOM().html(this._printCleanLayersButton());
+            }
 
             var itemsAux = new Array();
             var itemsIterator = this._itemsGetter.get(this);
