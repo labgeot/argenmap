@@ -50,7 +50,8 @@ const PLUGINS = {
     "betterWMS": "./src/js/map/plugins/leaflet/leaflet-wms/leaflet.wms.js",
     "graticula": "./src/js/map/plugins/leaflet/leaflet-simplegraticule/L.SimpleGraticule.js",
     "WMTS": "./src/js/map/plugins/leaflet/leaflet-wmts/leaflet-tilelayer-wmts.js",
-    "EasyPrint": "./src/js/map/plugins/leaflet/leaflet-easyPrint/bundle.js"
+    "EasyPrint": "./src/js/map/plugins/leaflet/leaflet-easyPrint/bundle.js",
+    "TextPath": "./src/js/map/plugins/leaflet/leaflet-textpath/leaflet.textpath.js"
 };
 
 const MESSAGE_TIME = 4000;
