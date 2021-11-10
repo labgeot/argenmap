@@ -396,13 +396,6 @@ function getLayerDataByWFS(coords, type, layerData) {
             }
         }).catch(()=>{
             console.info('The host does not provide capabilities for the WFS service');
-            //Test
-            // TODO Obtener el CRS a través del get capabilities del servicio WMS (gestorMenu.items[k].itemComposite.capa)
-            // coords.forEach((coordsPair,i) => {
-            //     let result = proj4(proj4('WGS84'),proj4(PROJECTIONS['22185']),coordsPair);
-            //     // coords[i] = result;
-            //     coords[i] = result;
-            // });
             let url = layerData.host, params = { 
                 service: 'wfs',
                 request: 'GetFeature',
@@ -575,21 +568,37 @@ let normalize = (function() {
    
   })();
 
-  function clickGeometryLayer(layer){
+  function clickGeometryLayer(layer, file){
     let aux = document.getElementById("flc-"+layer)
-  
+    console.log(layer);
     if(aux.className === "file-layer active"){
       aux.className = "file-layer" 
-      mapa.hideGroupLayer(layer)
+        if(file==undefined || !file){
+            mapa.hideGroupLayer(layer)
+            
+        }else {
+            console.log('vino al else');
+            mapa.hideGroupLayer(layer, true)
+            
+        }
+    //   mapa.hideGroupLayer(layer)
     }
     else{
       aux.className = "file-layer active"
-      mapa.showGroupLayer(layer)
+        if(file==undefined || !file){
+            mapa.showGroupLayer(layer)
+            
+        }else {
+            console.log('vino al else');
+            mapa.showGroupLayer(layer, true)
+            
+        }
+    //   mapa.showGroupLayer(layer)
     }
 }
 
-function deleteLayerGeometry(layer){
-    mapa.removeGroup(layer, true);
+function deleteLayerGeometry(layer,file){
+    mapa.removeGroup(layer, true, file);
     let id = "#fl-"+layer
     let parent = $(id).parent()[0]
     

@@ -2367,15 +2367,15 @@ class Menu_UI{
               img_icon.className = "file-img"
               img_icon.innerHTML = `<img loading="lazy" src="src/js/components/openfiles/icon_file.svg">`
               img_icon.onclick = function(){
-                clickGeometryLayer(id)
-                }
+                clickGeometryLayer(id, true)
+            }
 
             let layer_name = document.createElement("div")
             layer_name.className = "file-layername"
             layer_name.innerHTML= "<a>"+textName+"</a>"
             layer_name.title = fileName
             layer_name.onclick = function(){
-                clickGeometryLayer(id)
+                clickGeometryLayer(id, true)
             }
             
             //let id_options_container = "opt-c-"+layer
@@ -2500,7 +2500,7 @@ class Menu_UI{
         btn_si.innerHTML = "Eliminar"    
         btn_si.onclick = function(){
             delFileItembyID(id)
-            deleteLayerGeometry(id)
+            deleteLayerGeometry(id,true)
             $("#modal_layer_del").remove();
         }
 
