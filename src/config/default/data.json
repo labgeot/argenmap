@@ -90,14 +90,6 @@
       "servicio": "wms",
       "version": "1.3.0",
       "host": "https://wms.ign.gob.ar/geoserver/modelos-digitales-elevaciones"
-    },
-    {
-      "tab": {
-        "id": "Geoprocesos",
-        "searcheable": false,
-        "content": "Geoprocesos"
-      },
-      "type": "tab"
     }
   ],
   "template": "ign-geoportal-basic"

@@ -120,18 +120,18 @@ class ImpresorItemCapaBaseHTML extends Impresor {
 
         return "<li id='" + childId + "' class='list-group-item' onClick='gestorMenu.muestraCapa(\"" + childId + "\")'>" +
             "<div style='vertical-align:top'>" +
-                "<div class='base-layer-item' nombre=" + itemComposite.nombre + " href='#'>" +
-                    "<div class='base-layer-item-info'>" +
-                        "<img src='" + itemComposite.getLegendImg() + "' onerror='showImageOnError(this);' alt='" + titulo + "' class='img-rounded'>" +
-                        "<div class='non-selectable-text'><p style='margin: 0px;'>" + titulo + "</p></div>" +
-                    "</div>" +
-                    "<div class='zoom-info-icon'>" + 
-                        iconSvg + 
-                        "<span class='tooltiptext'>" + "Zoom mínimo de " + "<b>" + minZoom + "</b>" + " y máximo de " + "<b>" + maxZoom + "</b>" + "</span>" +
-                    "</div>" +
-                "</div>" +
+            "<div class='base-layer-item' nombre=" + itemComposite.nombre + " href='#'>" +
+            "<div class='base-layer-item-info'>" +
+            "<img src='" + itemComposite.getLegendImg() + "' onerror='showImageOnError(this);' alt='" + titulo + "' class='img-rounded'>" +
+            "<div class='non-selectable-text'><p style='margin: 0px;'>" + titulo + "</p></div>" +
             "</div>" +
-        "</li>";
+            "<div class='zoom-info-icon'>" +
+            iconSvg +
+            "<span class='tooltiptext'>" + "Zoom mínimo de " + "<b>" + minZoom + "</b>" + " y máximo de " + "<b>" + maxZoom + "</b>" + "</span>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</li>";
     }
 }
 
@@ -143,19 +143,19 @@ class ImpresorGrupoHTML extends Impresor {
 
         var active = (itemComposite.getActive() == true) ? ' in ' : '';
 
-		return '<div id="' + listaId + '" class="' + itemClass + ' panel-default">' + 
-					'<div class="panel-heading">' +
-						'<h4 class="panel-title">' +
-							'<a id="' + listaId + '-a" data-toggle="collapse" data-parent="#accordion1" href="#' + itemComposite.seccion + '" class="item-group-title">' + itemComposite.nombre + '</a>' +
-							"<div class='item-group-short-desc'><a data-toggle='collapse' data-toggle2='tooltip' title='" + itemComposite.descripcion + "' href='#" + itemComposite.seccion + "'>" + itemComposite.shortDesc + "</a></div>" +
-						'</h4>' +
-					'</div>' +
-					"<div id='" + itemComposite.seccion + "' class='panel-collapse collapse" + active + "'>" +
-						'<div class="panel-body">' +
-							itemComposite.itemsStr +
-						'</div>' +
-					'</div>' +
-				'</div>';
+        return '<div id="' + listaId + '" class="' + itemClass + ' panel-default">' +
+            '<div class="panel-heading">' +
+            '<h4 class="panel-title">' +
+            '<a id="' + listaId + '-a" data-toggle="collapse" data-parent="#accordion1" href="#' + itemComposite.seccion + '" class="item-group-title">' + itemComposite.nombre + '</a>' +
+            "<div class='item-group-short-desc'><a data-toggle='collapse' data-toggle2='tooltip' title='" + itemComposite.descripcion + "' href='#" + itemComposite.seccion + "'>" + itemComposite.shortDesc + "</a></div>" +
+            '</h4>' +
+            '</div>' +
+            "<div id='" + itemComposite.seccion + "' class='panel-collapse collapse" + active + "'>" +
+            '<div class="panel-body">' +
+            itemComposite.itemsStr +
+            '</div>' +
+            '</div>' +
+            '</div>';
     }
 }
 
@@ -284,10 +284,10 @@ class LayersInfoWMS extends LayersInfo {
                         }
 
                         var item = new Item(capa.nombre, this.section + clearString(capa.nombre), keywordsAux, this.customizedLayers[key]["new_abstract"], capa.titulo, capa, this.getCallback());
-                        
+
                         gestorMenu.setAllLayersAreDeclaredInJson(true);
                         gestorMenu.setAvailableLayer(capa.nombre, this.type);
-                        
+
                         item.setImpresor(impresorItem);
                         if (itemGroup.getItemByName(this.section + capa.nombre) == null) {
                             itemGroup.setItem(item);
@@ -425,7 +425,7 @@ class LayersInfoWMS extends LayersInfo {
                 _gestorMenu.addLayerInfoCounter();
                 if (_gestorMenu.finishLayerInfo()) { //Si ya cargó todas las capas solicitadas
                     _gestorMenu.printMenu();
-                    
+
                     //
                     gestorMenu.allLayersAreLoaded = true;
                 }
@@ -495,11 +495,11 @@ class LayersInfoWMTS extends LayersInfoWMS {
                         }
 
                         var item = new Item(capa.nombre, this.section + clearString(capa.nombre), keywordsAux, this.customizedLayers[key]["new_abstract"], capa.titulo, capa, this.getCallback());
-                        
+
                         gestorMenu.setAllLayersAreDeclaredInJson(true);
                         gestorMenu.setAvailableLayer(capa.nombre, this.type);
                         gestorMenu.setAvailableWmtsLayer(capa.nombre);
-                        
+
                         item.setImpresor(impresorItem);
                         if (itemGroup.getItemByName(this.section + capa.nombre) == null) {
                             itemGroup.setItem(item);
@@ -532,9 +532,9 @@ class LayersInfoWMTS extends LayersInfoWMS {
     _parseRequest(_gestorMenu) {
         const impresorGroup = this.itemGroupPrinter;
         const impresorItem = new ImpresorItemHTML();
-        
+
         var thisObj = this;
-        
+
         if (!$('#temp-menu').hasClass('temp')) { $('body').append('<div id="temp-menu" class="temp" style="display:none"></div>'); }
 
         // Load geoserver Capabilities, if success Create menu and append to DOM
@@ -552,10 +552,10 @@ class LayersInfoWMTS extends LayersInfoWMS {
             }
             var capas_layer = $('layer', content);
             var items = new Array();
-            
+
             capas_layer.each(function (index, b) {
                 var i = $(this);
-                
+
                 var iName = $('ows\\:identifier', i).html();
                 if (thisObj.isAllowebLayer(iName)) {
                     var iTitle = $('ows\\:title', i).html();
@@ -858,15 +858,15 @@ class ItemGroup extends ItemComposite {
         }
     }
 
-    hideAllLayers() { 
+    hideAllLayers() {
         for (var key2 in this.itemsComposite) {
             var item = this.itemsComposite[key2];
-			if (item.getVisible() == true) {
-				item.showHide();
-			}
-		}
+            if (item.getVisible() == true) {
+                item.showHide();
+            }
+        }
     }
-	
+
     hideAllLayersExceptOne(item) { }
 
     getAvailableTags() {
@@ -883,19 +883,19 @@ class ItemGroupBaseMap extends ItemGroup {
     isBaseLayer() {
         return true;
     }
-	
-	hideAllLayers() {
-		for (var key2 in this.itemsComposite) {
+
+    hideAllLayers() {
+        for (var key2 in this.itemsComposite) {
             var item = this.itemsComposite[key2];
-			if (item.getVisible() == true) {
-				item.showHide();
-			}
-		}
-	}
+            if (item.getVisible() == true) {
+                item.showHide();
+            }
+        }
+    }
 
     hideAllLayersExceptOne(item) {
         for (var key in this.itemsComposite) {
-			if (this.itemsComposite[key].getVisible() == true && item !== this.itemsComposite[key]) {
+            if (this.itemsComposite[key].getVisible() == true && item !== this.itemsComposite[key]) {
                 this.itemsComposite[key].showHide();
             }
         }
@@ -940,12 +940,12 @@ class ItemGroupWMSSelector extends ItemGroup {
 }
 
 class Item extends ItemComposite {
-	constructor(nombre, seccion, palabrasClave, descripcion, titulo, capa, callback) {
-		super(nombre, seccion, palabrasClave, descripcion);
-		this.titulo = titulo;
-		this.capa = capa;
-		this.capas = [capa];
-		this.visible = false;
+    constructor(nombre, seccion, palabrasClave, descripcion, titulo, capa, callback) {
+        super(nombre, seccion, palabrasClave, descripcion);
+        this.titulo = titulo;
+        this.capa = capa;
+        this.capas = [capa];
+        this.visible = false;
         this.legendImg = null;
         this.callback = callback;
     }
@@ -984,10 +984,10 @@ class Item extends ItemComposite {
                 loadWms(tmp.callback, tmp);
                 break;
             case "wmts":
-                loadWmts(tmp.callback, tmp);                
+                loadWmts(tmp.callback, tmp);
                 break;
             case "tms":
-                loadMapaBase(tmp.capa.host, tmp.capa.nombre, tmp.capa.attribution);            
+                loadMapaBase(tmp.capa.host, tmp.capa.nombre, tmp.capa.attribution);
                 break;
             case "bing":
                 loadMapaBaseBing(tmp.capa.key, tmp.capa.nombre, tmp.capa.attribution);
@@ -1006,13 +1006,13 @@ class Item extends ItemComposite {
         if (typeof this.callback == 'string') {
             this.callback = eval(this.callback);
         }
-        
+
         this.visible = !this.visible;
         this.capas[0].visible = this.visible;
         this.loadLayer(this, 0);
-		
+
         //Recorrer todas las capas del item
-		if (this.capas.length > 1) {
+        if (this.capas.length > 1) {
             const secondaryLayers = this.capas.slice(1, this.capas.length);
             for (var key in secondaryLayers) {
                 if (this.capas[+key + 1].hasOwnProperty('visible')) {
@@ -1027,12 +1027,12 @@ class Item extends ItemComposite {
                 }
             }
         }
-	}
-	
-	getLegendURL() {
-		return this.capa.getLegendURL();
-	}
-    
+    }
+
+    getLegendURL() {
+        return this.capa.getLegendURL();
+    }
+
     getAvailableTags() {
         var tagsAux = [this.capa.titulo];
         return tagsAux.concat(this.palabrasClave);
@@ -1198,9 +1198,9 @@ class GestorMenu {
         this._selectedTab = null;
         this._lazyInitialization = false;
         this._itemsGetter = new ItemsGetter();
-		this._layersJoin = null;
-		this._folders = {};
-	}
+        this._layersJoin = null;
+        this._folders = {};
+    }
 
     setBaseMapDependencies(baseLayers) {
         const baseMapDependencies = {};
@@ -1209,11 +1209,11 @@ class GestorMenu {
         });
         this.baseMapDependencies = baseMapDependencies;
     }
-    
+
     setAvailableLayer(layer_id, type) {
-        this.availableLayers.push({id: layer_id, type: type});
+        this.availableLayers.push({ id: layer_id, type: type });
     }
-    
+
     setAvailableWmtsLayer(layer_id) {
         this.availableWmtsLayers.push(layer_id);
     }
@@ -1290,22 +1290,22 @@ class GestorMenu {
     getLayerIdByName(layerName) {
         for (const section in this.items) {
             if (this.items[section].hasOwnProperty('itemsComposite')) {
-                if (this.items[section].getItemByName(layerName)) 
+                if (this.items[section].getItemByName(layerName))
                     return this.items[section].getItemByName(layerName).getId();
             }
         }
     }
-    
+
     getLayerNameById(layerId) {
-		for (var key in this.items) {
-			var itemComposite = this.items[key];
-			for (var key2 in itemComposite.itemsComposite) {
-				var item = itemComposite.itemsComposite[key2];
+        for (var key in this.items) {
+            var itemComposite = this.items[key];
+            for (var key2 in itemComposite.itemsComposite) {
+                var item = itemComposite.itemsComposite[key2];
                 if (item.getId() === layerId) {
-					return item.nombre;
-				}
-			}
-		}
+                    return item.nombre;
+                }
+            }
+        }
     }
 
     baseMapIsInUrl(layers) {
@@ -1478,11 +1478,11 @@ class GestorMenu {
             this._itemsGetter = new ItemsGetterSearcher();
         }
     }
-	
+
     setLayersJoin(layersJoin) {
         this._layersJoin = layersJoin;
     }
-    
+
     addLazyInitLayerInfoCounter(sectionId) {
         if (this._getLazyInitLayersInfoCounter[sectionId] == undefined) {
             this._getLazyInitLayersInfoCounter[sectionId] = 1;
@@ -1490,10 +1490,10 @@ class GestorMenu {
             this._getLazyInitLayersInfoCounter[sectionId]++;
         }
     }
-	
-	setFolders(folders) {
-		this._folders = folders;
-	}
+
+    setFolders(folders) {
+        this._folders = folders;
+    }
 
     getBasemapSelected() {
         return this.basemapSelected;
@@ -1680,43 +1680,43 @@ class GestorMenu {
     _formatTabName(tab) {
         return (tab.replace(EmptyTab, ''));
     }
-	
-	processLayersJoin() {
-		if (this._layersJoin != null) {
-			
-			//Buscar el item al cual incluirle capas
-			for (var keyJoin in this._layersJoin) {
-				var item = this.items[this._layersJoin[keyJoin].seccion];
-				if (item) {
-					for (var keyItem in item.itemsComposite) {
-						if (item.itemsComposite[keyItem].capa.host == this._layersJoin[keyJoin].host && item.itemsComposite[keyItem].capa.nombre == this._layersJoin[keyJoin].layer) {
-							
-							//Busca las capas a incluir
-							for (var keyJoinInt in this._layersJoin[keyJoin].joins) {
-								var itemInt = this.items[this._layersJoin[keyJoin].joins[keyJoinInt].seccion];
-								if (itemInt) {
-									for (var keyItemInt in itemInt.itemsComposite) {
-										if (itemInt.itemsComposite[keyItemInt].capa.host == this._layersJoin[keyJoin].joins[keyJoinInt].host && itemInt.itemsComposite[keyItemInt].capa.nombre == this._layersJoin[keyJoin].joins[keyJoinInt].layer) {
+
+    processLayersJoin() {
+        if (this._layersJoin != null) {
+
+            //Buscar el item al cual incluirle capas
+            for (var keyJoin in this._layersJoin) {
+                var item = this.items[this._layersJoin[keyJoin].seccion];
+                if (item) {
+                    for (var keyItem in item.itemsComposite) {
+                        if (item.itemsComposite[keyItem].capa.host == this._layersJoin[keyJoin].host && item.itemsComposite[keyItem].capa.nombre == this._layersJoin[keyJoin].layer) {
+
+                            //Busca las capas a incluir
+                            for (var keyJoinInt in this._layersJoin[keyJoin].joins) {
+                                var itemInt = this.items[this._layersJoin[keyJoin].joins[keyJoinInt].seccion];
+                                if (itemInt) {
+                                    for (var keyItemInt in itemInt.itemsComposite) {
+                                        if (itemInt.itemsComposite[keyItemInt].capa.host == this._layersJoin[keyJoin].joins[keyJoinInt].host && itemInt.itemsComposite[keyItemInt].capa.nombre == this._layersJoin[keyJoin].joins[keyJoinInt].layer) {
                                             item.itemsComposite[keyItem].capas = item.itemsComposite[keyItem].capas.concat(itemInt.itemsComposite[keyItemInt].capas);
-											delete itemInt.itemsComposite[keyItemInt];
+                                            delete itemInt.itemsComposite[keyItemInt];
                                             if (item.itemsComposite[keyItem].visible) {
                                                 if (!isNaN(keyItemInt)) {
                                                     item.itemsComposite[keyItem].capas[keyItemInt].visible = true;
                                                     item.itemsComposite[keyItem].loadLayer(item.itemsComposite[keyItem], keyItemInt);
                                                 }
                                             }
-										}
-									}
-								}
-							}
-							
-						}
-					}
-				}
-			}
-		}
-	}
-	
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     print() {
         this.executeLayersInfo();
     }
@@ -1824,136 +1824,136 @@ class GestorMenu {
         this.getMenuDOM().html(sInitialHTML);
 
     }
-	
-	generateSubFolders(itemsToFolders, folders) {
-		var itemsToPrint = new Array();
-		
-		for (var itemIndex in itemsToFolders) { //real items loop
-			var itemComposite = itemsToFolders[itemIndex];
-			var encontro = false;
-			for (var folderIndex in folders) { //folders loop
-				var folder = folders[folderIndex];
-				if (folder.items) {
-					if (folder.items.indexOf(itemComposite.seccion) != -1) {
-						encontro = true;
-						if (!itemsToPrint[folderIndex]) {
-							itemsToPrint[folderIndex] = new ItemGroup(itemComposite.tab, folder.nombre, itemComposite.seccion + 'f' + folderIndex, itemComposite.peso, itemComposite.palabrasClave, folder.resumen, folder.resumen);
-							itemsToPrint[folderIndex].setImpresor(new ImpresorGrupoHTML());
-							itemsToPrint[folderIndex].itemsComposite = {};
-							itemsToPrint[folderIndex].setObjDom(itemComposite.objDOM);
-						}
-						itemsToPrint[folderIndex].itemsComposite[itemComposite.seccion] = itemComposite;
-					}
-				}
-				if (folder.folders) {
-					ret = this.generateSubFolders(itemsToFolders, folder.folders);
-					if (ret != null && ret.length > 0) {
-						itemComposite = ret[0];
-						encontro = true;
-						if (!itemsToPrint[folderIndex]) {
-							itemsToPrint[folderIndex] = new ItemGroup(itemComposite.tab, folder.nombre, itemComposite.seccion + 'f' + folderIndex, itemComposite.peso, itemComposite.palabrasClave, folder.resumen, folder.resumen);
-							itemsToPrint[folderIndex].setImpresor(new ImpresorGrupoHTML());
-							itemsToPrint[folderIndex].itemsComposite = {};
-							itemsToPrint[folderIndex].setObjDom(itemComposite.objDOM);
-						}
-						for (var j = 0; j < ret.length; j++) {
-							itemsToPrint[folderIndex].itemsComposite[itemComposite.seccion] = ret[j];
-						}
-					}
-				}
-			}
-		}
-		
-		return itemsToPrint;
-	}
-	
-	isItemInSubFolders(itemComposite, folders) {
-		for (var folderIndex in folders) { //folders loop
-			var folder = folders[folderIndex];
-			if (folder.items) {
-				if (folder.items.indexOf(itemComposite.seccion) != -1) {
-					return true;
-				}
-			}
-			if (folder.folders) {
-				return this.isItemInSubFolders(itemComposite, folder.folders);
-			}
-		}
-		
-		return false;
-	}
-	
-	generateFolders(itemsToFolders) {
-		var itemsToPrint = new Array();
-		var i = 100;
-		
-		for (var itemIndex in itemsToFolders) { //real items loop
-			var itemComposite = itemsToFolders[itemIndex];
-			var encontro = false;
-			for (var folderIndex in this._folders) { //folders loop
-				var folder = this._folders[folderIndex];
-				if (folder.items) {
-					if (folder.items.indexOf(itemComposite.seccion) != -1) {
-						encontro = true;
-						if (!itemsToPrint[folderIndex]) {
-							itemsToPrint[folderIndex] = new ItemGroup(itemComposite.tab, folder.nombre, itemComposite.seccion + 'f' + folderIndex, itemComposite.peso, itemComposite.palabrasClave, folder.resumen, folder.resumen);
-							itemsToPrint[folderIndex].setImpresor(new ImpresorGrupoHTML());
-							itemsToPrint[folderIndex].itemsComposite = {};
-							itemsToPrint[folderIndex].setObjDom(itemComposite.objDOM);
-						}
-						itemsToPrint[folderIndex].itemsComposite[itemComposite.seccion] = itemComposite;
-					}
-				}
-				if (encontro == false && folder.folders) {
-					encontro = this.isItemInSubFolders(itemComposite, folder.folders);
-				}
-			}
-			if (!encontro){
-				itemsToPrint[i++] = itemComposite;
-			}
-		}
-		
-		for (var folderIndex in this._folders) { //folders loop
-			var folder = this._folders[folderIndex];
-			if (folder.folders) {
-				var ret = this.generateSubFolders(itemsToFolders, folder.folders);
-				if (ret != null && ret.length > 0) {
-					itemComposite = ret[0];
-					if (!itemsToPrint[folderIndex]) {
-						itemsToPrint[folderIndex] = new ItemGroup(itemComposite.tab, folder.nombre, itemComposite.seccion + 'f' + folderIndex, itemComposite.peso, itemComposite.palabrasClave, folder.resumen, folder.resumen);
-						itemsToPrint[folderIndex].setImpresor(new ImpresorGrupoHTML());
-						itemsToPrint[folderIndex].itemsComposite = {};
-						itemsToPrint[folderIndex].setObjDom(itemComposite.objDOM);
-					}
-					for (var j = 0; j < ret.length; j++) {
-						itemsToPrint[folderIndex].itemsComposite[itemComposite.seccion] = ret[j];
-					}
-				}
-			}
-		}
-		
-		itemsToPrint.sort(this.ordenaPorPeso);
-		for (var key in itemsToPrint) {
-			itemsToPrint[key].getObjDom().append(itemsToPrint[key].imprimir());
-		}
-	}
 
-	printMenu() {
-		
-		this.processLayersJoin();
-		
-		if (this._hasMoreTabsThanOne()) {
+    generateSubFolders(itemsToFolders, folders) {
+        var itemsToPrint = new Array();
+
+        for (var itemIndex in itemsToFolders) { //real items loop
+            var itemComposite = itemsToFolders[itemIndex];
+            var encontro = false;
+            for (var folderIndex in folders) { //folders loop
+                var folder = folders[folderIndex];
+                if (folder.items) {
+                    if (folder.items.indexOf(itemComposite.seccion) != -1) {
+                        encontro = true;
+                        if (!itemsToPrint[folderIndex]) {
+                            itemsToPrint[folderIndex] = new ItemGroup(itemComposite.tab, folder.nombre, itemComposite.seccion + 'f' + folderIndex, itemComposite.peso, itemComposite.palabrasClave, folder.resumen, folder.resumen);
+                            itemsToPrint[folderIndex].setImpresor(new ImpresorGrupoHTML());
+                            itemsToPrint[folderIndex].itemsComposite = {};
+                            itemsToPrint[folderIndex].setObjDom(itemComposite.objDOM);
+                        }
+                        itemsToPrint[folderIndex].itemsComposite[itemComposite.seccion] = itemComposite;
+                    }
+                }
+                if (folder.folders) {
+                    ret = this.generateSubFolders(itemsToFolders, folder.folders);
+                    if (ret != null && ret.length > 0) {
+                        itemComposite = ret[0];
+                        encontro = true;
+                        if (!itemsToPrint[folderIndex]) {
+                            itemsToPrint[folderIndex] = new ItemGroup(itemComposite.tab, folder.nombre, itemComposite.seccion + 'f' + folderIndex, itemComposite.peso, itemComposite.palabrasClave, folder.resumen, folder.resumen);
+                            itemsToPrint[folderIndex].setImpresor(new ImpresorGrupoHTML());
+                            itemsToPrint[folderIndex].itemsComposite = {};
+                            itemsToPrint[folderIndex].setObjDom(itemComposite.objDOM);
+                        }
+                        for (var j = 0; j < ret.length; j++) {
+                            itemsToPrint[folderIndex].itemsComposite[itemComposite.seccion] = ret[j];
+                        }
+                    }
+                }
+            }
+        }
+
+        return itemsToPrint;
+    }
+
+    isItemInSubFolders(itemComposite, folders) {
+        for (var folderIndex in folders) { //folders loop
+            var folder = folders[folderIndex];
+            if (folder.items) {
+                if (folder.items.indexOf(itemComposite.seccion) != -1) {
+                    return true;
+                }
+            }
+            if (folder.folders) {
+                return this.isItemInSubFolders(itemComposite, folder.folders);
+            }
+        }
+
+        return false;
+    }
+
+    generateFolders(itemsToFolders) {
+        var itemsToPrint = new Array();
+        var i = 100;
+
+        for (var itemIndex in itemsToFolders) { //real items loop
+            var itemComposite = itemsToFolders[itemIndex];
+            var encontro = false;
+            for (var folderIndex in this._folders) { //folders loop
+                var folder = this._folders[folderIndex];
+                if (folder.items) {
+                    if (folder.items.indexOf(itemComposite.seccion) != -1) {
+                        encontro = true;
+                        if (!itemsToPrint[folderIndex]) {
+                            itemsToPrint[folderIndex] = new ItemGroup(itemComposite.tab, folder.nombre, itemComposite.seccion + 'f' + folderIndex, itemComposite.peso, itemComposite.palabrasClave, folder.resumen, folder.resumen);
+                            itemsToPrint[folderIndex].setImpresor(new ImpresorGrupoHTML());
+                            itemsToPrint[folderIndex].itemsComposite = {};
+                            itemsToPrint[folderIndex].setObjDom(itemComposite.objDOM);
+                        }
+                        itemsToPrint[folderIndex].itemsComposite[itemComposite.seccion] = itemComposite;
+                    }
+                }
+                if (encontro == false && folder.folders) {
+                    encontro = this.isItemInSubFolders(itemComposite, folder.folders);
+                }
+            }
+            if (!encontro) {
+                itemsToPrint[i++] = itemComposite;
+            }
+        }
+
+        for (var folderIndex in this._folders) { //folders loop
+            var folder = this._folders[folderIndex];
+            if (folder.folders) {
+                var ret = this.generateSubFolders(itemsToFolders, folder.folders);
+                if (ret != null && ret.length > 0) {
+                    itemComposite = ret[0];
+                    if (!itemsToPrint[folderIndex]) {
+                        itemsToPrint[folderIndex] = new ItemGroup(itemComposite.tab, folder.nombre, itemComposite.seccion + 'f' + folderIndex, itemComposite.peso, itemComposite.palabrasClave, folder.resumen, folder.resumen);
+                        itemsToPrint[folderIndex].setImpresor(new ImpresorGrupoHTML());
+                        itemsToPrint[folderIndex].itemsComposite = {};
+                        itemsToPrint[folderIndex].setObjDom(itemComposite.objDOM);
+                    }
+                    for (var j = 0; j < ret.length; j++) {
+                        itemsToPrint[folderIndex].itemsComposite[itemComposite.seccion] = ret[j];
+                    }
+                }
+            }
+        }
+
+        itemsToPrint.sort(this.ordenaPorPeso);
+        for (var key in itemsToPrint) {
+            itemsToPrint[key].getObjDom().append(itemsToPrint[key].imprimir());
+        }
+    }
+
+    printMenu() {
+
+        this.processLayersJoin();
+
+        if (this._hasMoreTabsThanOne()) {
 
             this._printWithTabs();
-            
-            if(!app.template_id==="argenmap-leaflet-idera-tpl"){
+
+            if (!app.template_id === "argenmap-leaflet-idera-tpl") {
                 var itemsAux = new Array();
                 var itemsIterator = this._itemsGetter.get(this);
                 for (var key in itemsIterator) {
                     itemsAux.push(itemsIterator[key]);
                 }
                 itemsAux.sort(this.ordenaPorPeso);
-        
+
                 var itemsAuxToFolders = new Array(); //Array with items and folders
                 for (var key in itemsAux) {
 
@@ -1962,18 +1962,18 @@ class GestorMenu {
 
                     if ($('#' + itemComposite.seccion).length != 0) {
                         itemComposite.getObjDom().html('');
-                        
+
                     }
-                    itemComposite.setObjDom("#main-menu-tab-"+itemComposite.tab.id)
+                    itemComposite.setObjDom("#main-menu-tab-" + itemComposite.tab.id)
                     itemsAuxToFolders.push(itemComposite);
                 }
-        
-            //Generate logical folders
-            this.generateFolders(itemsAuxToFolders);
+
+                //Generate logical folders
+                this.generateFolders(itemsAuxToFolders);
             }
 
         } else {
-            
+
             this.getMenuDOM().html(this._printSearcher());
 
             var itemsAux = new Array();
@@ -1982,8 +1982,8 @@ class GestorMenu {
                 itemsAux.push(itemsIterator[key]);
             }
             itemsAux.sort(this.ordenaPorPeso);
-			
-			var itemsAuxToFolders = new Array(); //Array with items and folders
+
+            var itemsAuxToFolders = new Array(); //Array with items and folders
             for (var key in itemsAux) {
 
                 var itemComposite = itemsAux[key];
@@ -1995,10 +1995,10 @@ class GestorMenu {
 
                 itemsAuxToFolders.push(itemComposite);
             }
-			
-			//Generate logical folders
-			this.generateFolders(itemsAuxToFolders);
-			
+
+            //Generate logical folders
+            this.generateFolders(itemsAuxToFolders);
+
         }
 
         this.getLoadingDOM().hide();
@@ -2025,11 +2025,11 @@ class GestorMenu {
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             var target = $(e.target).attr("href") // activated tab object
             var activeTabId = target.replace('#main-menu-tab-', ''); // activated tab id
-            if (activeTabId === 'Geoprocesos') {
+            /*if (activeTabId === 'Geoprocesos') {
                 const geoprocessingTabContent = document.getElementById('main-menu-tab-Geoprocesos');
                 geoprocessingTabContent.innerHTML = '';
                 geoprocessingTabContent.appendChild(geoProcessingManager.getForm());
-            }
+            }*/
             gestorMenu.setSelectedTab(activeTabId);
             if (gestorMenu._selectedTab.isSearcheable == true) {
                 $('#searchForm').show();
@@ -2093,8 +2093,8 @@ class GestorMenu {
             }
         });
         //Jquery autocomplete (end)         
-	}
-    
+    }
+
     //Prints only one section (works on lazy initialization only)
     printOnlySection(sectionId) {
         var itemGroup = this.items[sectionId];
@@ -2121,21 +2121,21 @@ class GestorMenu {
 
         const wmtsLayers = [];
 
-		//Hide all if itemComposite selected is Base Map
+        //Hide all if itemComposite selected is Base Map
         var isBaseLayer = false;
         let baseLayerName = '';
-        
-		for (var key in this.items) {
-			var itemComposite = this.items[key];
-			for (var key2 in itemComposite.itemsComposite) {
-				var item = itemComposite.itemsComposite[key2];
+
+        for (var key in this.items) {
+            var itemComposite = this.items[key];
+            for (var key2 in itemComposite.itemsComposite) {
+                var item = itemComposite.itemsComposite[key2];
                 if (item.getId() == itemSeccion) {
-					isBaseLayer = itemComposite.isBaseLayer();
+                    isBaseLayer = itemComposite.isBaseLayer();
                     baseLayerName = item.nombre;
-					break;
-				}
-			}
-		}
+                    break;
+                }
+            }
+        }
 
         if (isBaseLayer && this.lastBaseMapSelected !== baseLayerName) {
             if (this.baseMapDependencies[this.lastBaseMapSelected])
@@ -2145,14 +2145,14 @@ class GestorMenu {
                 });
         }
 
-		//Show or hide selected item
+        //Show or hide selected item
         for (var key in this.items) {
             var itemComposite = this.items[key];
-			if (isBaseLayer && itemComposite.isBaseLayer()) {
+            if (isBaseLayer && itemComposite.isBaseLayer()) {
                 this.availableBaseLayers.forEach(baseLayer => {
                     this.removeActiveLayer(baseLayer);
                 });
-				itemComposite.hideAllLayers();
+                itemComposite.hideAllLayers();
             }
 
             for (var key2 in itemComposite.itemsComposite) {
@@ -2160,7 +2160,7 @@ class GestorMenu {
 
                 const layerIsActive = this.layerIsActive(item.nombre);
                 const layerIsWmts = this.layerIsWmts(item.nombre);
-                
+
                 if (isBaseLayer && layerIsActive && layerIsWmts) {
                     wmtsLayers.push(item);
                 } else {
@@ -2205,7 +2205,7 @@ class GestorMenu {
                 }
             }
         }
-        
+
         if (this.activeLayersHasBeenUpdated)
             this.activeLayersHasBeenUpdated();
     }
@@ -2301,10 +2301,10 @@ class Tab {
 /******************************************
 Item for Gestor Menu
 ******************************************/
-class Item_GestorMenu_UI{
-    createElement(groupname, layer){
-        let groupnamev= groupname.replace(/ /g, "_")
-        let main = document.getElementById("lista-"+groupnamev)
+class Item_GestorMenu_UI {
+    createElement(groupname, layer) {
+        let groupnamev = groupname.replace(/ /g, "_")
+        let main = document.getElementById("lista-" + groupnamev)
         let itemnew = document.createElement("div")
 
         let div = ` 
@@ -2314,8 +2314,8 @@ class Item_GestorMenu_UI{
         <div class="icon-layer-geo" onclick="deleteLayerGeometry('${layer}')"><i class="far fa-trash-alt" title="eliminar"></i></div>
         </div>
         `
-        if(!main){
-        itemnew.innerHTML =`
+        if (!main) {
+            itemnew.innerHTML = `
         <div id="lista-${groupnamev}" class="menu5 panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -2329,14 +2329,14 @@ class Item_GestorMenu_UI{
         </div>
         </div>`
 
-        let container = document.getElementById("main-menu-tab-Capas")
-        container.insertBefore(itemnew,container.firstChild)
-        
+            let container = document.getElementById("main-menu-tab-Capas")
+            container.insertBefore(itemnew, container.firstChild)
+
         }
-        else{
-            let content = document.getElementById(groupnamev+"-panel-body")
+        else {
+            let content = document.getElementById(groupnamev + "-panel-body")
             let aux = document.createElement("li")
-            aux.id = "li-"+layer 
+            aux.id = "li-" + layer
             aux.className = "capa list-group-item active"
             aux.innerHTML = `<div class="capa-title"><span data-toggle2="tooltip" title="" data-original-title="">${div}</span><div class="legend-layer"></div></div>`
             content.appendChild(aux)

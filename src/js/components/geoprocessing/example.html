@@ -1,0 +1,69 @@
+<!-- 
+se suelen representar generalmente con el siguiente criterio:
+* con un mismo color (muchas veces marrón, claro u oscuro dependiendo del fondo)
+* son todas finas excepto algunas un poco más gruesas que se llaman directrices, 
+maestras o principales, las cuales son números redondos (500, 1000, 1500, etc)
+* incluyen etiqueta con la altura generalmente en las directrices
+
+Contour:
+input 1: coordenadas de rectangulo (4 valores)
+input 2: Equidistancia
+execute [int,int,int,int,int]
+ -->
+
+<script>
+    let contour = new GeoserviceFactory.Contour(       
+      "http://127.0.0.1:8080/geoserver/ows?service=WPS&version=1.0.0"
+    );
+    console.log(contour.getFields());
+    contour
+      .execute(-69.8151, -34.1526, -69.8061, -34.1410, 100)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((ex) => {
+        console.log(ex.message);
+      });
+</script>
+
+<!-- 
+elevationProfile:
+input 1: coordenadas de linea (2 valores)
+execute [string]
+-->
+
+<script>
+    let elevationProfile = new GeoserviceFactory.ElevationProfile(       
+      "http://127.0.0.1/geoprocess-backend/elevation-profile"
+    );
+    console.log(elevationProfile.getFields());
+    elevationProfile
+      .execute("-69.8994766897101 -32.895181037843,-69.8994766897102 -32.895181037844")
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((ex) => {
+        console.log(ex.message);
+      });
+</script>
+
+<!-- 
+waterRise:
+input 1: coordenadas de linea
+input 2: level: number
+execute [int,int,int,int,int]
+ -->
+<script>
+    let waterRise = new GeoserviceFactory.WaterRise(       
+      "http://127.0.0.1:8080/geoserver/ows?service=WPS&version=1.0.0"
+    );
+    console.log(waterRise.getFields());
+    waterRise
+      .execute(-69.8151, -34.1526, -69.8061, -34.1410, 4000)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((ex) => {
+        console.log(ex.message);
+      });
+</script>

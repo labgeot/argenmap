@@ -1,3 +1,56 @@
+
+#mr{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    overflow: hidden;
+    float: none;
+    border-radius: 8px;
+    z-index: 1200;
+    border: 3px;
+    padding: 5px;
+    background-color: white;
+    left: 40%;
+    top: 100px;
+    position: absolute;
+    margin-bottom: 10px;
+    -moz-box-shadow: inset 0 0 10px #000000;
+    -webkit-box-shadow: inset 0 0 10px #000000;
+  
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.icons-modalfile{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  top:5px;
+}
+
+#btnclose-icon-modalfile {
+  text-align: right;
+  width: 5%;
+}
+.icon-modalfile {
+  display: inline-block;
+}
+
+#geoprocesos-icon {
+  position: absolute;
+  flex-direction: column;
+  width: 30px;
+  height: 30px;
+  color: black;
+  font-size: 1.1em;
+  top: 410px;
+  left: 10px;
+  z-index: 999;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
 .icon-layer-geo{
   color:silver;
   margin-left:  15px;
@@ -56,6 +109,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+}
+
+.modal-perfil-elevacion{
+  width: 450px;
+  overflow: hidden;
+  float: none;
+  border-radius: 8px;
+  z-index: 1200;
+  border: 3px;
+  padding: 5px;
+  background-color: white;
+  left: 40%;
+  top: 100px;
+  position: absolute;
+  margin-bottom: 10px;
+  -moz-box-shadow: inset 0 0 10px #000000;
+  -webkit-box-shadow: inset 0 0 10px #000000;
+
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 @media (max-width: 768px) {

@@ -30,12 +30,17 @@
       {
         "name": "Curvas de Nivel",
         "geoprocess": "contour",
-        "baseUrl": "localhost/geoserver/ows?service=WPS&version=1.0.0"
+        "baseUrl": "/geoserver/ows?service=WPS&version=1.0.0"
       },
       {
         "name": "Perfil de Elevacion",
         "geoprocess": "elevationProfile",
-        "baseUrl": " localhost/geoprocess-backend/elevation-profile"
+        "baseUrl": "/geoprocess-backend/elevation-profile"
+      },
+      {
+        "name": "Zona de Inundacion",
+        "geoprocess": "waterRise",
+        "baseUrl": "/geoserver/ows?service=WPS&version=1.0.0"
       }
     ]
   }

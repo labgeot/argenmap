@@ -353,6 +353,7 @@ async function loadTemplate(data, isDefaultTemplate) {
           if (Number.isInteger(mapa.getZoom())) {
             urlInteraction.zoom = mapa.getZoom();
             zoomLevel.zoom = mapa.getZoom();
+            geoProcessingManager.svgZoomStyle(mapa.getZoom())
           }
         });
 
@@ -372,6 +373,8 @@ async function loadTemplate(data, isDefaultTemplate) {
         const sidebarTool = new SidebarTools;
         sidebarTool.createComponent();
 
+        geoProcessingManager.createIcon();
+        //create icon on map for access and replace tab "geoprocesos"
         /* geoProcessingTabForm.createTabContent(); */
         
         setProperStyleToCtrlBtns();

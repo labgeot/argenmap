@@ -1,9 +1,14 @@
 
+var controlElevation = null
+var capaElevation = null
+let g_modal_close = true
 let geoprocessing = {
   'contour': GeoserviceFactory.Contour,
-  'elevationProfile': GeoserviceFactory.ElevationProfile
+  'elevationProfile': GeoserviceFactory.ElevationProfile,
+  'waterRise': GeoserviceFactory.ElevationProfile
 }
 let results_counter = 0
+let contour_result_active = false
 
 class Geoprocessing {
 
@@ -14,6 +19,91 @@ class Geoprocessing {
   optionsForm = null;
   fieldsToReferenceLayers = [];
 
+  svgZoomStyle(zoom){
+    if(contour_result_active){
+      let aux =  document.getElementById("fix-textpath")
+      if (zoom<14){
+        aux.innerHTML=`
+        .leaflet-pane svg text {
+          font-size: 0.1em !important;
+        }
+        `
+      }else{
+        aux.innerHTML=""
+        /*
+      aux.innerHTML=`
+      .leaflet-pane svg text {
+        font-size: 0.8em !important;}`*/
+      }
+      
+    }
+  }
+  createIcon(){
+    const modalicon = `
+    <div class="center-flex" id="iconopenfile-container">
+        <span id="spanopenfolder" class="fa fa-cog" aria-hidden="true" ></span>
+    </div>
+    `;
+    const elem = document.createElement("div");
+    elem.className = "center-flex"
+    elem.id = "geoprocesos-icon"
+    elem.title = "Geoprocesos"
+    elem.innerHTML = modalicon
+
+    elem.onclick = function(){
+      if(g_modal_close)geoProcessingManager.createModal()
+    }
+    document.getElementById("mapa").appendChild(elem);
+
+  }
+
+  createModal(){
+    let divContainer = document.createElement("div")
+    divContainer.id = "mr"
+    divContainer.className = "modalOpenFile"
+
+    let mainIcons = document.createElement("div")
+    mainIcons.className = "icons-modalfile"
+
+    let f_sec = document.createElement("section")
+    f_sec.style = "width:95%"
+
+    let s_sec = document.createElement("section")
+    s_sec.style = "width:5%"
+    let btnclose = document.createElement("a")
+    btnclose.id = "btnclose-icon-modalfile"
+    btnclose.className = "icon-modalfile"
+    btnclose.innerHTML = '<i title="cerrar" class="fa fa-times icon_close_mf" aria-hidden="true"></i>';
+    btnclose.onclick = function () {
+      divContainer.remove()
+    };
+    s_sec.append(btnclose);
+
+    mainIcons.append(f_sec)
+    mainIcons.append(s_sec)
+
+
+    let main_container = document.createElement("div")
+    main_container.id = "contenedor-geoprocesos"
+    
+    let formulario = document.createElement("section")
+    formulario.id = "main-Geoprocesos"
+    main_container.append(formulario)
+
+    divContainer.append(mainIcons);
+    divContainer.append(main_container);
+    document.body.appendChild(divContainer);
+
+    const geoprocessingTabContent = document.getElementById('main-Geoprocesos');
+    geoprocessingTabContent.innerHTML = '';
+    geoprocessingTabContent.appendChild(geoProcessingManager.getForm());
+
+
+    $("#mr").draggable({
+      containment: "#mapa"
+    })
+  }
+
   setAvailableGeoprocessingConfig(geoprocessingConfig) {
     this.geoprocessingConfig = geoprocessingConfig;
   }
@@ -21,17 +111,34 @@ class Geoprocessing {
   displayResult(result) {
     switch (this.geoprocessId) {
       case 'contour': {
+        contour_result_active = true
+        let style_fix_textpath = document.createElement("style")
+        style_fix_textpath.id = "fix-textpath"
+        style_fix_textpath.innerHTML = `
+        .leaflet-pane svg text {
+          font-size: 0.8em;
+        }`
+
+        document.head.appendChild(style_fix_textpath);
+
         let layername = 'contourResult_'+results_counter 
         results_counter++
-        mapa.addGeoJsonLayerToDrawedLayers(result, layername, false);
-        let item_GestorMenu = new Item_GestorMenu_UI
-        item_GestorMenu.createElement("Curvas de Nivel", layername)
+        
+        mapa.contourLayer(result, layername, false);
+        //let item_GestorMenu = new Item_GestorMenu_UI
+        //item_GestorMenu.createElement("Curvas de Nivel", layername)
         break;
       }
       case 'elevationProfile':{
-        //this.elevationDiv(result)
-        console.log(result.coordinates[0])
-
+        this.elevationDiv(result)
+      break;
+      }
+      case 'waterRise':{
+        let layername = 'waterRise_'+results_counter 
+        results_counter++
+        //mapa.addGeoJsonLayerToDrawedLayers(result, layername, false);
+        //let item_GestorMenu = new Item_GestorMenu_UI
+        break;
       break;
       }
     }
@@ -79,10 +186,32 @@ class Geoprocessing {
     });
   }
 
+  if(this.geoprocessId==="waterRise"){
+    this.fieldsToReferenceLayers.forEach(fieldId => {
+      const element = this.optionsForm.getElement(fieldId);
+      if (element.hasAttribute('references') && element.getAttribute('references') === 'drawedLayers') {
+        const options = [];
+        options.push({value: '', text: ''});
+        const layerTypes = element.getAttribute('layerTypes').split(',');
+        layerTypes.forEach(type => {
+          if (layers.hasOwnProperty(type)) {
+            layers[type].forEach(layer => {
+              options.push({value: layer.name, text: layer.name});
+            });
+          }
+        });
+        this.optionsForm.setOptionsToSelect(fieldId, options);
+      }
+    });
+  }
+  
+  
+
   }
   
 
   buildOptionForm(fields) {
+    console.log(this.geoprocessId)
     this.optionsForm.clearForm();
     this.fieldsToReferenceLayers = [];
     const formFields = [];
@@ -107,13 +236,16 @@ class Geoprocessing {
             const editableLayers = mapa.getEditableLayers();
 
             if(this.geoprocessId==="contour"){
-              field.allowedTypes.forEach(type => {
-                editableLayers[type].forEach(layer => {
+                editableLayers['rectangle'].forEach(layer => {
                   options.push({value: layer.name, text: layer.name});
-                });
-                
               });
-            }else{
+            }
+            else if(this.geoprocessId==="waterRise" ){
+                editableLayers['rectangle'].forEach(layer => {
+                  options.push({value: layer.name, text: layer.name});
+              });
+            }
+            else if(this.geoprocessId==="elevationProfile"){
               editableLayers['polyline'].forEach(layer => {
                 options.push({value: layer.name, text: layer.name});
               });
@@ -158,6 +290,27 @@ class Geoprocessing {
       }
     });
 
+    //la libreria no solicita el input de level en el caso waterRise
+    if(this.geoprocessId==='waterRise'){
+      const extraProps = {};
+          extraProps.type = 'input';
+          extraProps.title = 'level';
+          /*if (field.hasOwnProperty('min')) {
+            extraProps.min = field.min;;
+          }
+          if (field.hasOwnProperty('max')) {
+            extraProps.max = field.max;
+          }*/
+          const inputId = `input-level`;
+          const input = this.optionsForm.addElement('input', inputId, {
+            title: 'level',
+            extraProps: extraProps
+          });
+
+          formFields.push(input);
+    }
+    //formFields.push
+
     this.optionsForm.addButton('Ejecutar', () => {
       let values = [];
       for (let i = 0; i < formFields.length; i++) {
@@ -180,44 +333,64 @@ class Geoprocessing {
             }
             case 'elevationProfile':{
               const sw = layer.getBounds().getSouthWest();
-              values.push(sw.lng+" "+sw.lat);
+             // values.push(sw.lng+" "+sw.lat);
               const ne = layer.getBounds().getNorthEast();
-              values.push(ne.lng+" "+ne.lat);
+             // values.push(ne.lng+" "+ne.lat);
+
+              values = sw.lng+" "+sw.lat+","+ne.lng+" "+ne.lat
+              break;
+            }
+            case 'waterRise': {
+              const sw = layer.getBounds().getSouthWest();
+              values.push(sw.lng);
+              values.push(sw.lat);
+              const ne = layer.getBounds().getNorthEast();
+              values.push(ne.lng);
+              values.push(ne.lat);
               break;
             }
           }
 
         } else {
           values.push(+formFields[i].value);
+          console.log(formFields[i].value)
         }
       }
 
-      console.log("values es", values)
-      console.log("geoproceso", this.geoprocessing)
-      this.geoprocessing.execute(...values)
-      .then(result => {
-        this.displayResult(result);
-        values = [];
-      })
-      .catch(error => {
-        new UserMessage(error.message, true, 'error');
-      });
+      if (this.geoprocessId=== 'contour'){
+        this.geoprocessing.execute(...values)
+        .then(result => {
+          this.displayResult(result);
+        })
+        .catch(error => {
+          new UserMessage(error.message, true, 'error');
+        });
+      }
+      else if (this.geoprocessId=== 'elevationProfile'){
+        this.geoprocessing.execute(values)
+        .then(result => {
+          this.displayResult(result);
+        })
+        .catch(error => {
+          new UserMessage(error.message, true, 'error');
+        });
 
-      /*
-      const item = this.geoprocessingConfig.availableProcesses.find( e => e.geoprocess === this.geoprocessId );
-      let nuevothisgeoprocessing = ""
-      nuevothisgeoprocessing = new geoprocessing[this.geoprocessId](item.baseUrl);
-      console.log(...values, "valores de values")
-      nuevothisgeoprocessing.execute(...values)
-      .then(result => {
-        this.displayResult(result);
-        values = [];
-      })
-      .catch(error => {
-        new UserMessage(error.message, true, 'error');
-      });
-*/
+      }
+      else if (this.geoprocessId=== 'waterRise'){
 
+        let waterRise = new GeoserviceFactory.WaterRise(       
+          this.geoprocessing.host
+        );
+        waterRise
+          .execute(...values)
+          .then((result) => {
+            this.displayResult(result);
+            console.log(result);
+          })
+          .catch((ex) => {
+            console.log(ex.message);
+          });
+      }
 
     });
   }
@@ -269,17 +442,28 @@ class Geoprocessing {
   }
 
   elevationDiv(result){
+    let mainmodal = document.createElement("div")
+    mainmodal.id ="modal-perfil-elevacion"
+    mainmodal.className = "modal-perfil-elevacion"
+
     let dive = document.createElement("div")
         dive.id = "elevation-div"
         dive.className = "elevation-div"
         let modal = document.createElement("div")
         modal.innerHTML =`
-        <div id="ContainerER" class="ContainerTable ui-draggable ui-draggable-handle ui-resizable">
+        <div id="ContainerER" >
         <div id="icons-table">
-        <a id="btnclose" class="icon-table"><span onclick='$("#ContainerER").remove();' id="remove" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></div>
+        <a id="btnclose" class="icon-table"><span onclick='$("#modal-perfil-elevacion").remove();' id="remove" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></div>
         <div id="elevation-div-results"></div>
         </div>`
-        document.body.appendChild(modal)
+
+        mainmodal.append(modal)
+        document.body.appendChild(mainmodal)
+        $( "#modal-perfil-elevacion" ).draggable({
+          containment: "#mapa",
+          scroll: false}
+        );
+
          let aux = document.getElementById("elevation-div-results")
          aux.innerHTML = ""
          aux.append(dive)
@@ -288,15 +472,28 @@ class Geoprocessing {
             data: otraresp,
              options: {
               summary: "inline",
-              detachedView: false,
+              detachedView: true,
               elevationDiv: '#elevation-div',
               zFollow: 12,
-             legend: false,
+              legend: false,
+              myTag: "ele",
             },
           }
-        var controlElevation = L.control.elevation(opts.options);
-        controlElevation.addTo(mapa);
+        controlElevation = L.control.elevation(opts.options);
+        capaElevation = controlElevation.addTo(mapa);
         controlElevation.load(opts.data);
+        console.log("capa creada", capaElevation)
+        mapa.eachLayer(function (layer) {
+          if (layer.myTag && layer.myTag === value) {
+            //mapa.removeLayer(layer);
+          }
+        });
   }
+}
+
+function getColorContour(value){
+
+  return ''
+
 }
 
