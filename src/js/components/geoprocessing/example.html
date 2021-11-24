@@ -1,15 +1,21 @@
 <!-- 
-se suelen representar generalmente con el siguiente criterio:
-* con un mismo color (muchas veces marrón, claro u oscuro dependiendo del fondo)
-* son todas finas excepto algunas un poco más gruesas que se llaman directrices, 
-maestras o principales, las cuales son números redondos (500, 1000, 1500, etc)
-* incluyen etiqueta con la altura generalmente en las directrices
-
 Contour:
 input 1: coordenadas de rectangulo (4 valores)
 input 2: Equidistancia
 execute [int,int,int,int,int]
  -->
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+ </head>
+ <body>
+   
+ </body>
+ </html>
 
 <script>
     let contour = new GeoserviceFactory.Contour(       
@@ -31,14 +37,14 @@ elevationProfile:
 input 1: coordenadas de linea (2 valores)
 execute [string]
 -->
-
+-69.74525310103932 -33.54329042505865,-69.7406624828408 -33.54081341468674
 <script>
     let elevationProfile = new GeoserviceFactory.ElevationProfile(       
       "http://127.0.0.1/geoprocess-backend/elevation-profile"
     );
     console.log(elevationProfile.getFields());
     elevationProfile
-      .execute("-69.8994766897101 -32.895181037843,-69.8994766897102 -32.895181037844")
+      .execute("-69.74525310103932 -33.54329042505865,-69.7406624828408 -33.54081341468674")
       .then((result) => {
         console.log(result);
       })
