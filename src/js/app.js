@@ -364,31 +364,16 @@ async function loadTemplate(data, isDefaultTemplate) {
       addAnalytics(app.analytics_ids);
     }
 
-    app.addBasemaps();
-    app.addLayers();
-
-    //if charts is active in menu.json
-    if (loadCharts) {
-      $.getScript("https://d3js.org/d3.v5.min.js");
-      $.getScript("src/js/components/charts/charts.js");
-      $('head').append('<link rel="stylesheet" type="text/css" href="src/js/components/charts/charts.css">');
-    }
-
-    //if searchbar is active in menu.json
-    if(loadSearchbar){
-        $.getScript("src/js/components/searchbar/searchbar.js")
-        .done(function() {
-          var searchBar_ui =  new Searchbar_UI
-          searchBar_ui.create_sarchbar();
-        })
-        $('head').append('<link rel="stylesheet" type="text/css" href="src/js/components/searchbar/searchbar.css">');
-      }
-
+    
 
     //Load dynamic mapa.js
     app.template_id = template;
-    $.getScript(`src/js/map/map.js`, (res) => {
-    });
+    
+    $.getScript(`src/js/map/map.js`);
+    
+    
+    app.addBasemaps();
+    app.addLayers();
 
     template = 'templates/' + template + '/main.html';
 
@@ -397,20 +382,29 @@ async function loadTemplate(data, isDefaultTemplate) {
       if (mapa && mapa.hasOwnProperty('_leaflet_id')) {
         window.clearInterval(intervalID);
 
+        CSS_PLUGINS.forEach((value, i) => {
+          $('head').append(value);
+        });
+
+
+
         if (urlInteraction.areParamsInUrl) {
           mapa.setView(L.latLng(urlInteraction.center.latitude, urlInteraction.center.longitude), urlInteraction.zoom);
         }
 
-        const zoomLevel = new ZoomLevel(mapa.getZoom());
-
-        urlInteraction.zoom = mapa.getZoom();
-        mapa.on('zoom', () => {
-          if (Number.isInteger(mapa.getZoom())) {
-            urlInteraction.zoom = mapa.getZoom();
-            zoomLevel.zoom = mapa.getZoom();
-            geoProcessingManager.svgZoomStyle(mapa.getZoom())
-          }
+        $.getScript("src/js/components/zoomLevel/ZoomLevel.js").done(function(){
+          const zoomLevel = new ZoomLevel(mapa.getZoom());
+          urlInteraction.zoom = mapa.getZoom();
+          mapa.on('zoom', () => {
+            if (Number.isInteger(mapa.getZoom())) {
+              urlInteraction.zoom = mapa.getZoom();
+              zoomLevel.zoom = mapa.getZoom();
+              geoProcessingManager.svgZoomStyle(mapa.getZoom())
+            }
         });
+        })
+
+        
 
         urlInteraction.center = mapa.getCenter();
         mapa.on('moveend', () => {
@@ -419,16 +413,58 @@ async function loadTemplate(data, isDefaultTemplate) {
 
         gestorMenu.loadInitialLayers(urlInteraction);
 
-        const sc = new Screenshot;
-        sc.createComponent();
-        
-        const modalgeojson = new IconModalGeojson;
-        modalgeojson.createComponent();
-
-        const sidebarTool = new SidebarTools;
-        sidebarTool.createComponent();
+        $.getScript("src/js/components/sidebar/sidebar.js").done(function(){
+          const sidebarTool = new SidebarTools;
+          sidebarTool.createComponent();
+        })
 
         setProperStyleToCtrlBtns();
+
+        //FILES
+        $.getScript("src/js/components/openfiles/openfiles.js").done(function(){
+          const modalgeojson = new IconModalGeojson;
+          modalgeojson.createComponent();
+        })
+        //<!-- Leaflet Image -->
+        $.getScript("https://unpkg.com/leaflet-image@0.4.0/leaflet-image.js");
+        //<!-- Proj4.js -->
+        $.getScript("https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js");
+        //<!-- FileLayer and dependencies -->
+        $.getScript("src/js/plugins/FileLayer/omnivore/omnivore.min.js");
+        $.getScript("src/js/plugins/FileLayer/shapefile/shp.min.js");
+        $.getScript("src/js/plugins/FileLayer/FileLayer.js");
+
+        /////////TABLE & TABULATOR
+        $('head').append('<link rel="stylesheet" href="src/js/plugins/tabulator/tabulator.min.css">');
+        $('head').append('<link rel="stylesheet" href="src/js/components/table/table.css">');
+        $.getScript("src/js/plugins/tabulator/tabulator.min.js");
+        $.getScript("src/js/components/table/Datatable.js");
+        $.getScript("src/js/components/table/UI.js");
+        $.getScript("src/js/components/table/table.js");
+        $.getScript("src/js/components/table/TouchPunch.js");
+
+        //screenshot
+        $.getScript("src/js/components/screenshot/screenshot.js").done(function(){
+          const sc = new Screenshot;
+          sc.createComponent();
+        })
+
+        //if searchbar is active in menu.json
+        if(loadSearchbar){
+          $('head').append('<link rel="stylesheet" type="text/css" href="src/js/components/searchbar/searchbar.css">');
+          $.getScript("src/js/components/searchbar/searchbar.js")
+          .done(function() {
+            var searchBar_ui =  new Searchbar_UI
+            searchBar_ui.create_sarchbar();
+          })
+        }
+
+        //if charts is active in menu.json
+        if (loadCharts) {
+          $.getScript("https://d3js.org/d3.v5.min.js");
+          $.getScript("src/js/components/charts/charts.js");
+          $('head').append('<link rel="stylesheet" type="text/css" href="src/js/components/charts/charts.css">');
+        }
 
         if(loadGeoprocessing){
           $('head').append('<link rel="stylesheet" type="text/css" href="src/js/components/geoprocessing/geoprocessing.css">');

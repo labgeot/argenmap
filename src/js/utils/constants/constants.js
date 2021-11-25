@@ -55,6 +55,27 @@ const PLUGINS = {
     "textpath": "./src/js/map/plugins/leaflet/leaflet-textpath/leaflet-textpath.js",
 };
 
+const CSS_PLUGINS = [
+    `<link rel='stylesheet' href='https://daniellsu.github.io/leaflet-betterscale/L.Control.BetterScale.css' />`,
+    `<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">`,
+    `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.1/leaflet.awesome-markers.css">`,
+    `<link rel="stylesheet" href="src/js/map/plugins/leaflet/leaflet-zoomhome/dist/leaflet.zoomhome.css"/>`,
+    `<link rel="stylesheet" href="src/js/map/plugins/leaflet/leaflet-minimap/Control.MiniMap.css">`,
+    `<link rel="stylesheet" href="src/js/map/plugins/leaflet/leaflet-locate/L.Control.Locate.css">`,
+    `<link rel="stylesheet" href="src/js/map/plugins/leaflet/leaflet-mouseposition/src/L.Control.MousePosition.css">`,
+    `<link rel="stylesheet" href="src/js/map/plugins/leaflet/leaflet-measure/leadflet-measure.css">`,
+    `<link rel="stylesheet" href="src/js/map/plugins/leaflet/leaflet-fullscreen/Control.FullScreen.css"/>`,
+    `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>`,
+    `<link rel="stylesheet" href="src/js/map/plugins/leaflet/leaflet-simplegraticule/L.SimpleGraticule.css"/>`,
+    `<link href="src/js/components/zoomLevel/ZoomLevel.css" rel="stylesheet">`,
+    `<link href="src/js/components/screenshot/screenshot.css" rel="stylesheet">`,
+    `<link href="src/js/components/openfiles/openfiles.css" rel="stylesheet">`,
+    `<link href="src/js/components/sidebar/sidebar.css" rel="stylesheet">`,
+    `<link href="src/js/components/context-menu/context-menu.css" rel="stylesheet">`,
+    `<link href="src/js/components/user-message/user-message.css" rel="stylesheet">`
+]
+
+
 const MESSAGE_TIME = 4000;
 const MESSAGE_COLORS = {
     information: {

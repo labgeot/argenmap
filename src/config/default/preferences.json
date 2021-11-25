@@ -99,7 +99,7 @@
       {
         "name": "Zona de Inundacion",
         "geoprocess": "waterRise",
-        "baseUrl": "http://..../geoserver/ows?service=WPS&version=1.0.0"
+        "baseUrl": "http://.../geoserver/ows?service=WPS&version=1.0.0"
       }
     ]
   }
