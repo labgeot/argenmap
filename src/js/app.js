@@ -420,6 +420,9 @@ async function loadTemplate(data, isDefaultTemplate) {
         const modalgeojson = new IconModalGeojson;
         modalgeojson.createComponent();
 
+        const modalserviceLayers = new IconModalLoadServices;
+        modalserviceLayers.createComponent();
+
         const sidebarTool = new SidebarTools;
         sidebarTool.createComponent();
 
