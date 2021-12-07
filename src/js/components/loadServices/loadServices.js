@@ -79,7 +79,7 @@ class ModalService{
     form.innerHTML = `
     <div class="input-group">
     <span class="input-group-addon" id="basic-addon1"><i class="fas fa-link"></i></span>
-    <input type="text" name="input-url" class="form-control" placeholder="http://.../geoserver/ows?service=wms&version=1.3.0....." aria-describedby="basic-addon1">
+    <input value="http://nodoide.catamarca.gob.ar/geoserver/idecat/ows?service=wms&version=1.3.0&request=GetCapabilities" type="text" name="input-url" class="form-control" placeholder="http://.../geoserver/ows?service=wms&version=1.3.0....." aria-describedby="basic-addon1">
     <span class="input-group-addon" id="buttonConectar" onclick="handleURLInput()">Conectar</span>
     </div>
     `
@@ -155,11 +155,36 @@ function handleURLInput() {
     let wmsResultContainer = document.createElement('div');
     // Show title and layers count
     let title = serviceLayer.getTitle();
+    let serviceID = serviceLayer.getId();
     let header = document.createElement('div');
     header.classList.add("page-header");
     header.innerHTML = `
-        <h5>${title} <small>${layers.length} capas obtenidas</small></h5>
+        <div class="title-service">
+          <h5 id="title-text-${serviceID}">${title}</h5>
+          <input type="text" class="title-input-service" id="title-input-${serviceID}">
+        </div>
+        <small>${layers.length} capas obtenidas</small>
       `;
+    let editButton = document.createElement('button');
+    editButton.classList.add('fas');
+    editButton.classList.add('fa-pen-square');
+    editButton.setAttribute('id',`title-edit-${serviceID}`);
+    editButton.onclick = function (event) {
+      editServiceTitle(serviceID,event)
+    };     
+
+    let saveButton = document.createElement('button');
+    saveButton.classList.add('fas');
+    saveButton.classList.add('fa-save');
+    saveButton.setAttribute('id',`title-save-${serviceID}`);
+    saveButton.onclick = function (event) {
+      saveServiceTitle(serviceID,event)
+    };
+    saveButton.style.display = 'none';
+    
+    header.childNodes[1].append(editButton);
+    header.childNodes[1].append(saveButton);
+
     wmsResultContainer.append(header);
     // Show layers and checkboxes
     layers.forEach((layer)=>{
@@ -180,6 +205,41 @@ function handleURLInput() {
     console.error(error); 
     document.getElementById('wrongURL').style.display = 'block';
   });
+}
+
+function editServiceTitle(serviceID,event) {
+  event.target.style.display = 'none';
+
+  let text = document.getElementById(`title-text-${serviceID}`);
+  let input = document.getElementById(`title-input-${serviceID}`);
+  let value = text.innerText;
+
+  text.style.display = 'none';
+  input.style.display = 'block';
+  
+  let button = document.getElementById(`title-save-${serviceID}`);
+  button.style.display = 'block';
+  input.value = value;
+
+  input.focus();
+}
+
+function saveServiceTitle(serviceID,event) {
+  event.target.style.display = 'none';
+  
+  let text = document.getElementById(`title-text-${serviceID}`);
+  let input = document.getElementById(`title-input-${serviceID}`);
+  let value = input.value;
+  
+  menu_ui.editGroupName(serviceID,text.innerText,value);
+  servicesLoaded[serviceID].title = value;
+  text.innerText = value;
+  
+  text.style.display = 'block';
+  input.style.display = 'none';
+
+  let editButton = document.getElementById(`title-edit-${serviceID}`);
+  editButton.style.display = 'block';
 }
 
 

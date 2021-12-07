@@ -77,13 +77,9 @@ class ServiceLayers{
     }
 }
 
-function generateId(title) {
-    let id = '';
-    id+=title[Math.floor(Math.random() * (0 - title.length)) + title.length];
-    id+=title[Math.floor(Math.random() * (0 - title.length)) + title.length];
-    id+=title[Math.floor(Math.random() * (0 - title.length)) + title.length];
-    id+=Math.floor(Math.random() * (10000 - 99999)) + 10000;
-    return id;
+function generateId() {
+    // A horrible but quickly way to parse String
+    return 'wms-'+(new Date().getTime() + "").substr(6);
 }
 
 function getHost(getCapabilitiesURL) {
@@ -116,6 +112,12 @@ function getHost(getCapabilitiesURL) {
  * @param {String} url to getCapabilities
  * @returns validated url
  */
+
+// TODO https://sig.se.gob.ar/wmspubmap?service=wms&request=GetCapabilities&version=1.3.0
+
+// https://sig.se.gob.ar/wmspubmap?service=wms&request=GetCapabilities&version=1.3.0
+
+
 function validateUrl(url) {
     let service = url.includes('service=wms');
     let getCapabilities = url.includes('request=GetCapabilities');

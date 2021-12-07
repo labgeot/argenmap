@@ -162,7 +162,6 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
     addLayers: function () {
 
       app.items.forEach(element => {
-
         if (element.type != "basemap") {
           let item = element, tab = new Tab(item.tab),
             customizedLayers = (item.customize_layers == undefined) ? "" : item.customize_layers,

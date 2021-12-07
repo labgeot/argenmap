@@ -1,3 +1,5 @@
+
+
 #wrongURL {
   width: 91%;
   margin-top: 6px;
@@ -12,13 +14,33 @@
 }
 
 .page-header {
-  margin-top: 18px;
+  margin-top: 10px;
   margin-bottom: 12px;
 }
 
-.page-header h5 {
+.page-header .title-service {
+  display:flex;
+  align-items:center;
+}
+
+.page-header .title-service h5 {
   color: #37bbed;
   margin-bottom: 4px;
+  margin-right: 4px;
+}
+
+.page-header .title-service button {
+  background: none;
+  color: #37bbed;
+  border:none;
+}
+
+.page-header .title-service .title-input-service {
+  border:none;
+  outline: none;
+  border-bottom: 2px solid #37bbed;
+  display: none;
+  width: 80%;
 }
 
 .page-header small {
@@ -185,8 +207,8 @@
   border-radius: 3px;
   background-color: #fff;
 
-  width: 30px !important;
-  height: 30px !important;
+  width: 30px;
+  height: 30px;
   border: none !important;
   box-shadow: 0 1px 5px rgb(0 0 0 / 65%);
 }
@@ -532,13 +554,21 @@ cursor: pointer;
   }
 }
 
+
+
+@media (min-width: 1365px) { 
+  #modalloadservices {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+
 @media (max-height: 500px) {
   #modalloadservice {
     left: 34px;
     top: 188px;
     border: 1px solid rgba(0, 0, 0, 0.2);
-    width: 32px;
-    height: 32px;
   }
 }
 
@@ -548,6 +578,8 @@ cursor: pointer;
     top: 264px;
   }
 }
+
+
 
 
 /**/

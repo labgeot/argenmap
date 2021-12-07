@@ -421,6 +421,7 @@ class LayersInfoWMS extends LayersInfo {
                         var capa = new CapaMapserver(iName, iTitle, iSrs, thisObj.host, thisObj.service, thisObj.version, thisObj.feature_info_format, iMinX, iMaxX, iMinY, iMaxY);
                     } else {
                         var capa = new Capa(iName, iTitle, iSrs, thisObj.host, thisObj.service, thisObj.version, thisObj.feature_info_format, keywords, iMinX, iMaxX, iMinY, iMaxY);
+                        // TODO se agrega la info de WFS a una capa
                         gestorMenu.layersDataForWfs[capa.nombre] = {
                             name: capa.nombre,
                             section: capa.titulo,
@@ -2328,7 +2329,7 @@ class Menu_UI{
     }
 
     addSection(name){
-        let groupnamev= name.replace(/ /g, "_")
+        let groupnamev = name.replace(/ /g, "_")
         let itemnew = document.createElement("div")
         itemnew.innerHTML =`
         <div id="lista-${groupnamev}" class="menu5 panel-default">
@@ -2583,6 +2584,11 @@ class Menu_UI{
         $(`#i-${id}`).focus()
     }
 
+    editGroupName(id,oldName,newName){
+        let el = document.getElementById(`${oldName.replace(/ /g, "_")}-a`);
+        if(el) el.innerText = newName;
+    }
+
     addLayerToGroup(groupname, textName, id, fileName,layer){
         let newLayer = layer;
         newLayer.active = false;
@@ -2602,7 +2608,7 @@ class Menu_UI{
         let groupnamev = groupname.replace(/ /g, "_")
         let main = document.getElementById("lista-"+groupnamev)
         let id_options_container = "opt-c-"+id
-        if(!main){this.addSection(groupnamev)}
+        if(!main){this.addSection(groupname)}
 
         let content = document.getElementById(groupnamev+"-panel-body")
         let layer_container = document.createElement("div")
@@ -2633,6 +2639,12 @@ class Menu_UI{
                     transparent: true,
                 }).addTo(mapa);
                 layer.active = true;
+
+                gestorMenu.layersDataForWfs[layer.name] = {
+                    name: layer.name,
+                    section: layer.title,
+                    host: layer.host
+                }
             }else {
                 mapa.removeLayer(layer.L_layer);
                 layer.active = false;
