@@ -1,8 +1,8 @@
 var baseLayers = {};
-
 var baseLayersInfo = {};
 var selectedBasemap = null;
 let menu_ui = new Menu_UI;
+var geoProcessingManager =null;
 const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
   impresorBaseMap = new ImpresorCapasBaseHTML(),
   impresorGroup = new ImpresorGrupoHTML(),
@@ -48,6 +48,10 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
 
       if (app.hasOwnProperty('layer_options')) {
         setLayerOptions(app.layer_options.isActive);
+      }
+
+      if (app.hasOwnProperty('geoprocessing')) {
+        setGeoprocessing(app.geoprocessing.isActive);
       }
 
       await this._startModules();
@@ -180,13 +184,15 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
               item.tab = "";
             }
 
+            if (item.type === "wmslayer" || item.type === "wmslayer_mapserver") { item.type = "wms" }
+
             switch (item.type) {
-              case "wmslayer":
+              case "wms":
                 getGeoserverCounter++;
                 if (tab.listType == "combobox") {
                   impresorGroupTemp = impresorGroupWMSSelector;
                 }
-                let wmsLayerInfo = new LayersInfoWMS(item.host, item.servicio, item.version, tab, item.seccion, item.peso, item.nombre, item.short_abstract, featureInfoFormat, item.type, customizedLayers, impresorGroupTemp);
+                let wmsLayerInfo = new LayersInfoWMS(item.host, item.servicio, item.version, tab, item.seccion, item.peso, item.nombre, item.short_abstract, featureInfoFormat, item.type, item.icons, customizedLayers, impresorGroupTemp);
                 if (item.allowed_layers) {
                   wmsLayerInfo.setAllowebLayers(item.allowed_layers);
                 }
@@ -204,7 +210,7 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
                 if (tab.listType == "combobox") {
                   impresorGroupTemp = impresorGroupWMSSelector;
                 }
-                let wmtsLayerInfo = new LayersInfoWMTS(item.host, item.servicio, item.version, tab, item.seccion, item.peso, item.nombre, item.short_abstract, featureInfoFormat, item.type, customizedLayers, impresorGroupTemp);
+                let wmtsLayerInfo = new LayersInfoWMTS(item.host, item.servicio, item.version, tab, item.seccion, item.peso, item.nombre, item.short_abstract, featureInfoFormat, item.type, item.icons, customizedLayers, impresorGroupTemp);
                 if (item.allowed_layers) {
                   wmtsLayerInfo.setAllowebLayers(item.allowed_layers);
                 }
@@ -403,6 +409,7 @@ async function loadTemplate(data, isDefaultTemplate) {
           if (Number.isInteger(mapa.getZoom())) {
             urlInteraction.zoom = mapa.getZoom();
             zoomLevel.zoom = mapa.getZoom();
+            if(loadGeoprocessing){geoProcessingManager.svgZoomStyle(mapa.getZoom())}
           }
         });
 
@@ -427,7 +434,23 @@ async function loadTemplate(data, isDefaultTemplate) {
 
         setProperStyleToCtrlBtns();
 
-        
+        if(loadGeoprocessing){
+          $('head').append('<link rel="stylesheet" type="text/css" href="src/js/components/geoprocessing/geoprocessing.css">');
+          $('head').append('<link rel="stylesheet" type="text/css" href="src/js/components/form-builder/form-builder.css">');
+          $('head').append('<link rel="stylesheet" href="src/js/map/plugins/leaflet/leaflet-elevation/leaflet-elevation.css">');
+          $('head').append('<link rel="stylesheet" type="text/css" href="src/js/components/form-builder/form-builder.css">');
+            $.getScript("src/js/plugins/geoprocess-executor/geoprocess-executor.js").done(function(){
+              $.getScript("src/js/components/form-builder/form-builder.js").done(function(){
+                $.getScript("src/js/components/geoprocessing/geoprocessing.js").done(function(){
+                  geoProcessingManager = new Geoprocessing();
+                  geoProcessingManager.createIcon();
+                  geoProcessingManager.setAvailableGeoprocessingConfig(app.geoprocessing)
+                });
+              })
+            })
+
+        }
+
       }
     }, 100);
 

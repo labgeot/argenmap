@@ -6,6 +6,7 @@ var loadCharts = false;
 var loadSearchbar = false;
 var loadLayerOptions = false;
 var currentlyDrawing = false;
+var loadGeoprocessing  = false;
 
 function setTableAsPopUp(cond) {
     loadTableAsPopUp = cond;
@@ -25,6 +26,10 @@ function setSearchbar(cond) {
 
  function setLayerOptions(cond) {
     loadLayerOptions = cond;
+ }
+
+ function setGeoprocessing(cond) {
+    loadGeoprocessing = cond;
  }
 
 const reverseCoords = (coords) => {
@@ -101,7 +106,7 @@ function getDarkerColorTone(hex, lum) {
 
 function showImageOnError(image) {
 	image.onerror = "";
-    image.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+    image.src = ERROR_IMG;
     return true;
 }
 
@@ -503,6 +508,46 @@ function setSelectedBasemapAsActive(layerName, availableBasemaps) {
     gestorMenu.setBasemapSelected(baseLayerId);
 };
 
+function adaptToImage(imgDiv) {
+  
+  let img = imgDiv.childNodes[0], item = imgDiv.closest("li");
+  if (img.naturalHeight > 24) {
+    let resize_img_icon = document.createElement("div");
+    resize_img_icon.className = "resize-legend-combobox";
+    resize_img_icon.style = "align-self: center;font-size: 14px";
+    resize_img_icon.innerHTML = '<i class="fas fa-angle-down" aria-hidden="true"></i>';
+
+    let container_expand_legend_grafic = document.createElement("div");
+    container_expand_legend_grafic.className = "expand-legend-graphic";
+    container_expand_legend_grafic.style = "overflow:hidden;";
+    container_expand_legend_grafic.setAttribute("load", false);
+
+    let max_url_img = img.src.replace(/off/g, "on");
+    max_url_img += ';fontAntiAliasing:true;wrap:true;wrap_limit:100;fontName:Verdana;'
+    container_expand_legend_grafic.innerHTML = `<img class='legend-img-max' loading='lazy'  src='${max_url_img}'></img>`;
+
+    resize_img_icon.onclick = () => {
+      if (container_expand_legend_grafic.getAttribute("load") === "true") {
+        //container_expand_legend_grafic.className = "hidden";
+        container_expand_legend_grafic.classList.toggle("hidden");
+        container_expand_legend_grafic.setAttribute("load", false);
+        resize_img_icon.innerHTML = '<i class="fas fa-angle-down" aria-hidden="true"></i>';
+      } else {
+        container_expand_legend_grafic.classList.remove("hidden");
+        //container_expand_legend_grafic.classList.toggle("hidden");
+        container_expand_legend_grafic.setAttribute("load", true);
+        container_expand_legend_grafic.style = "background-color: white;";
+        resize_img_icon.innerHTML = '<i class="fas fa-angle-up" aria-hidden="true"></i>';
+        item.append(container_expand_legend_grafic);
+      }
+    };
+
+    imgDiv.removeChild(img);
+    imgDiv.append(resize_img_icon);
+    imgDiv.title = "abrir leyenda";
+  }
+}
+
 //Orden de prioridad:
 //1. Declarado en url.
 //2. Marcado en json como selected: true.
@@ -624,7 +669,7 @@ function controlSeccionGeom(file){
 
 function zoomEditableLayers(layername){
     let layer = mapa.groupLayers.hasOwnProperty(layername)
-   console.log(layer)
+   //console.log(layer)
    if (layer.type === 'marker' || layer.type === 'circlemarker') {
     mapa.fitBounds(L.latLngBounds([layer.getLatLng()]));
     } else {
@@ -635,9 +680,25 @@ function zoomEditableLayers(layername){
   function bindZoomLayer(){
 
     let elements = document.getElementsByClassName("zoom-layer");
-    let zoomLayer = function() {
+    let zoomLayer = async function() {
         let layer_name = this.getAttribute("layername")
         let bbox = app.layers[layer_name].capa
+            //if (bbox.servicio === "wms" && typeof bbox.maxy == "null" || typeof bbox.maxy == "undefined") {
+            if (bbox.servicio === "wms" && [bbox.minx,bbox.legendURL].some(el => el === null || 'undefined')) {
+                await getWmsLyrParams(bbox); // gets layer atribtutes from WMS
+            }
+
+        if (bbox.maxy == "null" || typeof bbox.maxy == "undefined"){
+            for (i = 0; i < this.childNodes.length; i++) {
+                if (this.childNodes[i].className == "fas fa-search-plus") {
+                  this.childNodes[i].classList.remove('fa-search-plus');
+                  this.childNodes[i].classList.add('fa-exclamation-triangle');
+                  //this.childNodes[i].setAttribute('style', 'color: orange');
+                  this.childNodes[i].setAttribute('title', 'Invalid bbox in WMS response');
+                  break;
+                }        
+            }
+        }
 
         //si la capa no esta activa activar
         let activas = gestorMenu.activeLayers
@@ -647,12 +708,11 @@ function zoomEditableLayers(layername){
             active = true
           })
         if(!active)gestorMenu.muestraCapa(app.layers[layer_name].childid)
-        
         let bounds = [[bbox.maxy, bbox.maxx], [bbox.miny, bbox.minx]];
         try {
             mapa.fitBounds(bounds);
         } catch (error) {
-            //console.log(bounds);
+            console.error(error);
         }
     };
     
@@ -696,6 +756,55 @@ function zoomEditableLayers(layername){
         }
     }
 
+function getStyleContour(){
+    console.log("ejecuto")
+    let styles = {
+        line_color: "#7b7774",
+        line_weight: 1,
+        d_line_m: 50,
+        d_line_color: "#7b7774",
+        d_weigth: 3
+    }
+
+    if(loadGeoprocessing){
+        let g = app.geoprocessing.availableProcesses
+        g.forEach(e => {
+            if(e.geoprocess=="contour"){
+                if(e.styles){
+                    console.log(e.styles)
+                    if(e.styles.line_color){styles.line_color = e.styles.line_color}
+                    if(e.styles.line_weight){styles.line_weight = e.styles.line_weight}
+                    if(e.styles.d_line_m){styles.d_line_m = e.styles.d_line_m}
+                    if(e.styles.d_line_color){styles.d_line_color = e.styles.d_line_color}
+                    if(e.styles.d_weigth){styles.d_weigth = e.styles.d_weigth}
+                }
+            }
+        })
+    }
+
+    return styles
+}
+
+function getMulticolorContour(n){
+    //TODO reemplazar por rampa
+    let color = ""
+    if(n>=6000){color = "#8E492D"}
+    else if(n<6000 && n>=5000){color = "#B5574E"}
+    else if(n<5000 && n>=4000){color = "#CA813D"}
+    else if(n<4000 && n>=3000){color = "#CB9550"}
+    else if(n<3000 && n>=2000){color = "#E2AE4E"}
+    else if(n<2000 && n>=1000){color = "#E4C47A"}
+    else if(n<1000 && n>=500){color = "#FAB24A"}
+    else if(n<500 && n>=400){color = "#FCCA78"}
+    else if(n<400 && n>=300){color = "#FEE3AC"}
+    else if(n<300 && n>=200){color = "#FFFDCC"}
+    else if(n<200 && n>=150){color = "#E6F6E5"}
+    else if(n<150 && n>=100){color = "#CCEBB5"}
+    else if(n<100 && n>=50){color = "#99D98C"}
+    else if(n<50 && n>0){color = "#80CF66"}
+    else if(n<=0){color = "#4DC070"}
+    return color
+}
 
   //add funcion with setTimeout 
   //fix bug--->  line 553 entities.js 
@@ -706,3 +815,88 @@ function zoomEditableLayers(layername){
             bindLayerOptions()
          }, 2000);
       };
+
+
+      function bindLayerOptionsIdera(){
+          setTimeout(function(){ 
+            bindZoomLayer()
+            bindLayerOptions()
+         }, 1000);
+      }
+
+
+function zoomLayer(id_dom) {
+  let nlayer = app.layerNameByDomId[id_dom];
+  let bbox = app.layers[nlayer].capa;
+  //solo sii la capa no esta activa activar
+  let activas = gestorMenu.activeLayers;
+  let active = false;
+  activas.forEach(function (key) {
+    if (key === nlayer) active = true;
+  });
+  if (!active) gestorMenu.muestraCapa(app.layers[nlayer].childid);
+
+  let bounds = [
+    [bbox.maxy, bbox.maxx],
+    [bbox.miny, bbox.minx],
+  ];
+  try {
+    mapa.fitBounds(bounds);
+  } catch (error) {
+    //console.log(bounds);
+  }
+}
+
+async function getWmsLyrParams(lyr) {
+  //let url = `${lyr.host}/${lyr.nombre}/ows?service=${lyr.servicio}&version=${lyr.version}&request=GetCapabilities`,
+  let url = `${lyr.host}?service=${lyr.servicio}&version=${lyr.version}&request=GetCapabilities`,
+    sys = lyr.version === "1.3.0" ? "CRS" : "SRS";
+  await fetch(url)
+    .then((res) => res.text())
+    .then((str) => {
+      parseXml(str, lyr, sys);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+function parseXml(str, lyr, sys) {
+    let xmlLyr, parser = new DOMParser(), xmlDoc, xmlNodes;
+    try {
+        xmlDoc = parser.parseFromString(str, "text/xml");
+    } catch (error) { }
+    xmlDoc.documentElement.nodeName == "parsererror"
+        ? console.error("error while parsing")
+        : (xmlNodes = xmlDoc.getElementsByTagName("Name"));
+
+    if (xmlNodes) {
+        for (i = 0; i < xmlNodes.length; i++) {
+            if (xmlNodes[i].childNodes[0].nodeValue === lyr.nombre) {
+                xmlLyr = xmlNodes[i].parentNode;
+            }
+        }
+
+        let bboxNodes = xmlLyr.getElementsByTagName("BoundingBox");
+        lyr.legendURL =
+            xmlLyr.getElementsByTagName("OnlineResource")[0].attributes["xlink:href"].value;
+
+        for (i = 0; i < bboxNodes.length; i++) {
+            if (lyr.minx === null || typeof lyr.minx === "undefined") {
+                let srs = bboxNodes[i].attributes[sys];
+                if (srs.value === sys + ":4326" ||
+                    srs.value === sys + ":84") {
+                    lyr.minx = bboxNodes[i].attributes["minx"].value;
+                    lyr.miny = bboxNodes[i].attributes["miny"].value;
+                    lyr.maxx = bboxNodes[i].attributes["maxx"].value;
+                    lyr.maxy = bboxNodes[i].attributes["maxy"].value;
+                    lyr.srs = srs.value;
+                } else {
+                    console.info(
+                        `Layer SRS is ${srs.value}, not supported for zoom to layer yet.`
+                    );
+                }
+            }
+        }
+    }
+}
