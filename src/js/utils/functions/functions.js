@@ -205,6 +205,7 @@ function loadWmsTplAux(objLayer, param) {
     }
     
     function createWmsLayer(objLayer) {
+        console.log(objLayer);
         //Extends WMS.Source to customize popup behavior
         var MySource = L.WMS.Source.extend({
             'showFeatureInfo': function(latlng, info) {

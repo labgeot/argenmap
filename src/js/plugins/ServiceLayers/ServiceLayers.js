@@ -2,6 +2,7 @@ class ServiceLayers{
     constructor(){
         this.layers = null;
         this.url = null;
+        this.host = null;
         this.rawData = null;
         this.title = null;
         this.abstract = null;
@@ -56,11 +57,16 @@ class ServiceLayers{
             if (!url) {
                 reject('url parameter is required');
             }
-    
-            this.url = validateUrl(url);
+            
+            let urlValidated = validateUrl(url)
+            this.url = urlValidated.capability;
+            this.host = urlValidated.host;
+            // this.url = url;
+
+            // console.log('validated',validateUrl(url));
 
             // Get data
-            return fetch(this.url)
+            return fetch(this.url,{mode: 'cors'})
             .then(function (response) {
                 return response.text();
             })
@@ -110,49 +116,54 @@ function getHost(getCapabilitiesURL) {
 /**
  * Check and transform url if it necessary, adding service=wms, getCapabilities or http scheme
  * @param {String} url to getCapabilities
- * @returns validated url
+ * @returns {Object} capability url and host
  */
-
-// TODO https://sig.se.gob.ar/wmspubmap?service=wms&request=GetCapabilities&version=1.3.0
 
 // https://sig.se.gob.ar/wmspubmap?service=wms&request=GetCapabilities&version=1.3.0
 
-
+// https://sig.se.gob.ar/wmspubmap?service=wms&request=GetCapabilities&version=1.3.0
 function validateUrl(url) {
-    let service = url.includes('service=wms');
-    let getCapabilities = url.includes('request=GetCapabilities');
+    // create an element "a" to use its properties
+    var a = document.createElement('a');
+    a.href = url;
 
-    let newURL = "";
-
-    if(!service || !getCapabilities){
-        let scheme = url.includes('http') || url.includes('https');
-
-        if (scheme) {
-            // Se recorta la url para dejar por fuera el schemeo http o https
-            newURL = url.split('//')[1];
-        }else{
-            newURL = url;
-        }
-
-        if (newURL.includes('geoserver')) {
-            newURL = newURL.split('/');
-            newURL = newURL.splice(0,3).join('/');
-
-        }else{
-            newURL = newURL.split('/');
-            newURL = newURL.splice(0,2).join('/');
-
-        }
-
-        return 'https://'+newURL+'/ows?service=wms&version=1.3.0&request=GetCapabilities';
+    return {
+        host: a.origin + a.pathname,
+        capability: a.origin + a.pathname + '?service=wms&request=GetCapabilities'
     }
+    // let service = url.includes('service=wms');
+    // let getCapabilities = url.includes('request=GetCapabilities');
 
-    
-    if (url.includes('https')) {
-        // url = url.replace('https','http');
-    }else if(!url.includes('http')) {
-        url = 'https://'+url
-    }
+    // let newURL = "";
 
-    return url;
+    // if(!service || !getCapabilities){
+    //     let scheme = url.includes('http') || url.includes('https');
+
+    //     if (scheme) {
+    //         // Se recorta la url para dejar por fuera el schemeo http o https
+    //         newURL = url.split('//')[1];
+    //     }else{
+    //         newURL = url;
+    //     }
+
+    //     if (newURL.includes('geoserver')) {
+    //         newURL = newURL.split('/');
+    //         newURL = newURL.splice(0,3).join('/');
+
+    //     }else{
+    //         newURL = newURL.split('/');
+    //         newURL = newURL.splice(0,2).join('/');
+
+    //     }
+
+    //     return 'https://'+newURL+'/ows?service=wms&version=1.3.0&request=GetCapabilities';
+    // }
+
+    // if (url.includes('https')) {
+    //     url = url.replace('https','http');
+    // }else if(!url.includes('http')) {
+    //     url = 'https://'+url
+    // }
+    // console.log(url);
+    // return url;
 }

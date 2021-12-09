@@ -2971,6 +2971,13 @@ class Menu_UI{
         layer_name.title = fileName
         layer_name.onclick = function(){
             layer_item.classList.toggle('active');
+
+            // console.log(layer);
+
+            // var capa = new Capa(id,layer.title,layer.srs,layer.host,'wms','1.3.0','application%2Fjson',['test,test2'],layer.minx,layer.maxx,layer.miny,layer.maxy,layer.attribution,layer.legend);
+            
+            // createWmsLayer(capa);
+
             if (!layer.active) {
                 layer.L_layer = L.tileLayer.wms(layer.host, {
                     layers: layer.name,
