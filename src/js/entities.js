@@ -2542,9 +2542,56 @@ class Menu_UI{
         let id_options_container = "opt-c-"+id
         if(!main){this.addSection(groupnamev)}
         let content = document.getElementById(groupnamev+"-panel-body")
-        let layer_container = document.createElement("div")
-        layer_container.id = "fl-" +id
-        layer_container.className = "file-layer-container"
+             let layer_container = document.createElement("div")
+             layer_container.id = "fl-" +id
+             layer_container.className = "file-layer-container"
+
+             let layer_item = document.createElement("div")
+             layer_item.id = "flc-" +id
+             layer_item.className = "file-layer active"
+              
+             let img_icon =document.createElement("div")
+             img_icon.className = "file-img"
+             img_icon.innerHTML = `<img loading="lazy" src="src/js/components/openfiles/icon_file.svg">`
+             img_icon.onclick = function(){
+                clickGeometryLayer(id, true)
+             }
+
+            let layer_name = document.createElement("div")
+            layer_name.className = "file-layername"
+            layer_name.innerHTML= "<a>"+textName+"</a>"
+            layer_name.title = fileName
+            layer_name.onclick = function(){
+                clickGeometryLayer(id, true)
+            }
+            
+            let options = document.createElement("div")
+            options.style = "width:10$;padding-right:5px;cursor:pointer;"
+            options.className = "btn-group"
+            options.role ="group"
+            options.id = id_options_container
+
+            let fdiv = document.createElement("div")
+            fdiv.style = "border: 0px;"
+            fdiv.className = "dropdown-toggle"
+            fdiv.setAttribute('data-toggle', 'dropdown')
+            fdiv.setAttribute('aria-haspopup', 'true')
+            fdiv.setAttribute('aria-expanded', 'false')
+            fdiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16"> <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/> </svg>'
+            // fdiv.innerHTML = '<span class="caret"></span>'
+
+            let mainul = document.createElement("ul")
+            mainul.className = "dropdown-menu"
+            mainul.style = "right:0px !important;left:auto !important;"
+            mainul.id = "opt-c-"+id
+
+            let delete_opt = document.createElement("li")
+            delete_opt.innerHTML = `<a style="color:#474b4e;" href="#"><i  class="fa fa-trash" aria-hidden="true" style="width:20px;"></i>Eliminar Capa</a>`
+            delete_opt.onclick = function(){
+                let menu = new Menu_UI
+                menu.modalEliminar(id)
+                //deleteLayerGeometry(layer)
+            }
 
             let download_opt = document.createElement("li")
             download_opt.innerHTML =`<a style="color:#474b4e;" href="#"><i class="fa fa-download" aria-hidden="true" style="width:20px;"></i>Descargar .geojson</a>`
@@ -2554,68 +2601,24 @@ class Menu_UI{
                 mapa.downloadMultiLayerGeoJSON(id,addedLayers[index_file].name,true)
             }
 
-        let layer_name = document.createElement("div")
-        layer_name.className = "file-layername"
-        layer_name.innerHTML= "<a>"+textName+"</a>"
-        layer_name.title = fileName
-        layer_name.onclick = function(){
-            clickGeometryLayer(id, true)
-        }
-        
-        let options = document.createElement("div")
-        options.style = "width:10$;padding-right:5px;cursor:pointer;"
-        options.className = "btn-group"
-        options.role ="group"
-        options.id = id_options_container
-
-        let fdiv = document.createElement("div")
-        fdiv.style = "border: 0px;"
-        fdiv.className = "dropdown-toggle"
-        fdiv.setAttribute('data-toggle', 'dropdown')
-        fdiv.setAttribute('aria-haspopup', 'true')
-        fdiv.setAttribute('aria-expanded', 'false')
-        fdiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16"> <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/> </svg>'
-        // fdiv.innerHTML = '<span class="caret"></span>'
-
-        let mainul = document.createElement("ul")
-        mainul.className = "dropdown-menu"
-        mainul.style = "right:0px !important;left:auto !important;"
-        mainul.id = "opt-c-"+id
-
-        let delete_opt = document.createElement("li")
-        delete_opt.innerHTML = `<a style="color:#474b4e;" href="#"><i  class="fa fa-trash" aria-hidden="true" style="width:20px;"></i>Eliminar Capa</a>`
-        delete_opt.onclick = function(){
-            let menu = new Menu_UI
-            menu.modalEliminar(id)
-            //deleteLayerGeometry(layer)
-        }
-
-        download_opt = document.createElement("li")
-        download_opt.innerHTML =`<a style="color:#474b4e;" href="#"><i class="fa fa-download" aria-hidden="true" style="width:20px;"></i>Descargar .geojson</a>`
-        download_opt.onclick = function(){
-            let index_file = getIndexFileLayerbyID(id)
-            let d_file_name = addedLayers[index_file].name
-            mapa.downloadMultiLayerGeoJSON(id,d_file_name,true)
-        }
-
-        let edit_name_opt = document.createElement("li")
-        edit_name_opt.innerHTML =`<a style="color:#474b4e;" href="#"><i class="fa fa-edit" aria-hidden="true" style="width:20px;"></i>Editar Nombre</a>`
-        edit_name_opt.onclick = function(){
-            menu_ui.editFileLayerName(id)
-        }
-        
-        mainul.append(edit_name_opt)
-        mainul.append(download_opt)
-        mainul.append(delete_opt)
-        
-        options.append(fdiv)
-        options.append(mainul)
-                    
-        layer_item.append(img_icon)
-        layer_item.append(layer_name)
-        layer_item.append(options)
-        layer_container.append(layer_item)
-        content.appendChild(layer_container)
+            let edit_name_opt = document.createElement("li")
+            edit_name_opt.innerHTML =`<a style="color:#474b4e;" href="#"><i class="fa fa-edit" aria-hidden="true" style="width:20px;"></i>Editar Nombre</a>`
+            edit_name_opt.onclick = function(){
+                menu_ui.editFileLayerName(id)
+            }
+            
+            mainul.append(edit_name_opt)
+            mainul.append(download_opt)
+            mainul.append(delete_opt)
+            
+            options.append(fdiv)
+            options.append(mainul)
+                      
+            layer_item.append(img_icon)
+            layer_item.append(layer_name)
+            layer_item.append(options)
+            layer_container.append(layer_item)
+            content.appendChild(layer_container)
     }
 
     addLayerOptions(layer){
