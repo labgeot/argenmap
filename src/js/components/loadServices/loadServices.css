@@ -1,4 +1,7 @@
-
+.all-layers-checkbox{
+  margin-bottom: 0px;
+  padding-bottom: 6px;
+}
 
 #wrongURL {
   width: 91%;
@@ -15,7 +18,9 @@
 
 .page-header {
   margin-top: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom:0;
 }
 
 .page-header .title-service {
@@ -27,6 +32,7 @@
   color: #37bbed;
   margin-bottom: 4px;
   margin-right: 4px;
+  font-size: 16px;
 }
 
 .page-header .title-service button {
@@ -67,6 +73,13 @@
 #select-layers-container label {
   font-weight: normal;
   width: 100%;
+  border-left: 1px solid #27168830;
+  margin-bottom: 0px;
+}
+
+.tree-line {
+  color: #27168830;
+  margin-right: 4px;
 }
 
 .input_newname{

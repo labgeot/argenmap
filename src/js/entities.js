@@ -2928,7 +2928,29 @@ class Menu_UI{
         if(el) el.innerText = newName;
     }
 
-    addLayerToGroup(groupname, textName, id, fileName,layer){
+    removeLayerFromGroup(groupname, textName, id, fileName,layer){
+        if(serviceItems[id].layers[textName].L_layer != null){
+            serviceItems[id].layers[textName].L_layer.remove();
+        }
+
+        document.getElementById("srvcLyr-"+id+textName).remove();
+        // console.log(serviceItems[id].layers[textName]);
+        
+        for (let i in serviceItems[id].layers) {
+            if (serviceItems[id].layers[i] === textName) {
+                serviceItems[id].layers.splice(i,1);
+                break;
+            }
+        }
+    }
+    
+    removeLayersGroup(groupname){
+        let el = document.getElementById(`lista-${groupname.replace(/ /g, "_")}`);
+        if(el) el.remove();
+        // console.log(groupname);
+    }
+
+    addLayerToGroup(groupname, textName, id, fileName, layer){
         let newLayer = layer;
         newLayer.active = false;
         newLayer.L_layer = null;
@@ -2955,7 +2977,7 @@ class Menu_UI{
         layer_container.className = "file-layer-container"
 
         let layer_item = document.createElement("div")
-        layer_item.id = "flc-" +id
+        layer_item.id = "srvcLyr-"+id+textName
         layer_item.className = "file-layer"
         
         let img_icon =document.createElement("div")

@@ -74,7 +74,7 @@ class ModalService{
     let form = document.createElement("form")
     form.className = "wms-form"
     
-
+    // http://sipan.inta.gov.ar/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities
     
     form.innerHTML = `
     <div class="input-group">
@@ -163,8 +163,8 @@ function handleURLInput() {
           <h5 id="title-text-${serviceID}">${title}</h5>
           <input type="text" class="title-input-service" id="title-input-${serviceID}">
         </div>
-        <small>${layers.length} capas obtenidas</small>
-      `;
+        `;
+    // <small>${layers.length} capas obtenidas</small>
     let editButton = document.createElement('button');
     editButton.classList.add('fas');
     editButton.classList.add('fa-pen-square');
@@ -186,6 +186,14 @@ function handleURLInput() {
     header.childNodes[1].append(saveButton);
 
     wmsResultContainer.append(header);
+
+    let checkLabel = document.createElement('label');
+    checkLabel.classList.add("all-layers-checkbox");
+    checkLabel.innerHTML = `
+    <span class="tree-line">─</span><input type="checkbox" value="${serviceID}" onchange="handleAllLayersCheck(event)">&nbsp;Agregar todas <small>(${layers.length} capas)</small>
+    `;
+    wmsResultContainer.append(checkLabel);
+
     // Show layers and checkboxes
     layers.forEach((layer)=>{
       // serviceLayers.push(layer);
@@ -194,7 +202,7 @@ function handleURLInput() {
 
       let checkLabel = document.createElement('label');
       checkLabel.innerHTML = `
-      <input type="checkbox" value="${layer.name}" onchange="handleLayerCheck(event)">&nbsp;${capitalize(layer.title)}
+      <span class="tree-line">──</span><input type="checkbox" value="${layer.name}" onchange="handleLayerCheck(event)">&nbsp;${capitalize(layer.title)}
       `;
       wmsResultContainer.append(checkLabel);
     })
@@ -243,15 +251,60 @@ function saveServiceTitle(serviceID,event) {
 }
 
 
+function handleAllLayersCheck(e){
+  // console.log(servicesLoaded[e.target.value].layers);
+
+  if(e.target.checked){
+    // console.log(servicesLoaded[e.target.value]);
+    
+    // servicesLoaded[e.target.value].layers.forEach((layer,id)=>{
+    //   console.log('h');
+    //   console.info(id,layer);
+    // })
+
+    for(let layer_name in servicesLoaded[e.target.value].layers){
+      // console.log(layer);
+      // console.log(servicesLoaded[e.target.value].layers[layer_name])
+      document.querySelector(`input[value='${layer_name}']`).checked = true
+      selectedServiceLayers.push(layer_name);
+      menu_ui.addLayerToGroup(servicesLoaded[layersIndex[layer_name]].title,layer_name,layersIndex[layer_name],layer_name,servicesLoaded[layersIndex[layer_name]].layers[layer_name])
+    }
+    
+  }else{
+    let groupName;
+    for(let layer_name in servicesLoaded[e.target.value].layers){
+      groupName = servicesLoaded[layersIndex[layer_name]].title;
+      menu_ui.removeLayerFromGroup(servicesLoaded[layersIndex[layer_name]].title,layer_name,layersIndex[layer_name],layer_name,servicesLoaded[layersIndex[layer_name]].layers[layer_name])
+      document.querySelector(`input[value='${layer_name}']`).checked = false
+      for (let i in selectedServiceLayers) {
+        if (selectedServiceLayers[i] === layer_name) {
+          selectedServiceLayers.splice(i,1);
+          break;
+        }
+      }
+    }
+    
+    menu_ui.removeLayersGroup(groupName);
+  }
+}
+
 function handleLayerCheck(e) {
   if(e.target.checked){
     selectedServiceLayers.push(e.target.value);
     menu_ui.addLayerToGroup(servicesLoaded[layersIndex[e.target.value]].title,e.target.value,layersIndex[e.target.value],e.target.value,servicesLoaded[layersIndex[e.target.value]].layers[e.target.value])
   }else{
-    let layerIndex = selectedServiceLayers.findIndex(l=> l == e.target.value );
-    if(layerIndex!=-1) selectedServiceLayers.splice(layerIndex,1);
+    menu_ui.removeLayerFromGroup(servicesLoaded[layersIndex[e.target.value]].title,e.target.value,layersIndex[e.target.value],e.target.value,servicesLoaded[layersIndex[e.target.value]].layers[e.target.value])
+    // document.querySelector(`input[value='${e.target.value}']`).checked = false
+    for (let i in selectedServiceLayers) {
+      if (selectedServiceLayers[i] === e.target.value) {
+        selectedServiceLayers.splice(i,1);
+        break;
+      }
+    }
   }
 }
+
+
 
 function capitalize(word) {
   return word[0].toUpperCase() + word.slice(1).toLowerCase();
