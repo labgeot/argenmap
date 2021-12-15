@@ -2508,7 +2508,7 @@ class Menu_UI{
         this.available_options = ["download","filter","trash"]
     }
 
-    addSection(name){
+    addSection(name) {
         let groupnamev = name.replace(/ /g, "_")
         let itemnew = document.createElement("div")
         itemnew.innerHTML =`
@@ -2934,7 +2934,6 @@ class Menu_UI{
         }
 
         document.getElementById("srvcLyr-"+id+textName).remove();
-        // console.log(serviceItems[id].layers[textName]);
         
         for (let i in serviceItems[id].layers) {
             if (serviceItems[id].layers[i] === textName) {
@@ -2947,7 +2946,6 @@ class Menu_UI{
     removeLayersGroup(groupname){
         let el = document.getElementById(`lista-${groupname.replace(/ /g, "_")}`);
         if(el) el.remove();
-        // console.log(groupname);
     }
 
     addLayerToGroup(groupname, textName, id, fileName, layer){
@@ -2980,26 +2978,21 @@ class Menu_UI{
         layer_item.id = "srvcLyr-"+id+textName
         layer_item.className = "file-layer"
         
-        let img_icon =document.createElement("div")
+        let img_icon = document.createElement("div")
         img_icon.className = "loadservice-layer-img"
-        img_icon.innerHTML = `<img loading="lazy" src="src/js/components/loadServices/icon-load-services.svg">`
+        img_icon.innerHTML = `<img loading="lazy" src="${layer.legend}&Transparent=True&scale=1&LEGEND_OPTIONS=forceTitles:off;forceLabels:off">`
         img_icon.onclick = function(){
             clickGeometryLayer(id, true)
         }
 
         let layer_name = document.createElement("div")
         layer_name.className = "file-layername"
-        layer_name.innerHTML= "<a>"+textName+"</a>"
-        layer_name.title = fileName
+        let capitalizedTitle = layer.title[0].toUpperCase() + layer.title.slice(1).toLowerCase();
+        layer_name.innerHTML= "<a>"+capitalizedTitle+"</a>"
+        layer_name.title = fileName;
         layer_name.onclick = function(){
             layer_item.classList.toggle('active');
-
-            // console.log(layer);
-
-            // var capa = new Capa(id,layer.title,layer.srs,layer.host,'wms','1.3.0','application%2Fjson',['test,test2'],layer.minx,layer.maxx,layer.miny,layer.maxy,layer.attribution,layer.legend);
             
-            // createWmsLayer(capa);
-
             if (!layer.active) {
                 layer.L_layer = L.tileLayer.wms(layer.host, {
                     layers: layer.name,
@@ -3007,7 +3000,7 @@ class Menu_UI{
                     transparent: true,
                 }).addTo(mapa);
                 layer.active = true;
-
+                
                 gestorMenu.layersDataForWfs[layer.name] = {
                     name: layer.name,
                     section: layer.title,
@@ -3017,10 +3010,34 @@ class Menu_UI{
                 mapa.removeLayer(layer.L_layer);
                 layer.active = false;
             }
+        }        
+        
+        let zoom_button = document.createElement("div")
+        zoom_button.className = "loadservice-layer-img"
+        zoom_button.innerHTML = `<i class="fas fa-search-plus" title="Zoom a capa"></i>`
+        zoom_button.onclick = function(){
+            
+            layer_item.classList.toggle('active');
+            
+            if (!layer.active) {
+                let bounds = [[layer.maxy, layer.maxx], [layer.miny, layer.minx]];
+                mapa.fitBounds(bounds);
+                layer.L_layer = L.tileLayer.wms(layer.host, {
+                    layers: layer.name,
+                    format: 'image/png',
+                    transparent: true,
+                }).addTo(mapa);
+                layer.active = true;
+            }else {
+                mapa.removeLayer(layer.L_layer);
+                layer.active = false;
+            }
         }
+
 
         layer_item.append(img_icon)
         layer_item.append(layer_name)
+        layer_item.append(zoom_button)
         layer_container.append(layer_item)
         content.appendChild(layer_container)
 

@@ -28,18 +28,26 @@ class ServiceLayers{
                 this.title = this.rawData.Service.Title;
                 this.id = generateId(this.title);
     
-                let host = getHost(this.url);
-    
                 this.layers = this.rawData.Capability.Layer.Layer.map((layer) => {
+
+                    let bbox;
+                    // TODO Se deberia comprobar la existencia de CRS:84 realizar la asignación de minx,miny,etc acá dependiendo el sistema
+                    layer.BoundingBox.some((p) => {
+                        if (p.crs == 'CRS:84') {
+                            bbox = p.extent;
+                            return true;
+                        }
+                    })
+
                     return {
                         name: layer.Name,
                         title: layer.Title,
                         srs: layer.BoundingBox[0].crs,
-                        host: host,
-                        minx: layer.BoundingBox[0].extent[0],
-                        maxx: layer.BoundingBox[0].extent[1],
-                        miny: layer.BoundingBox[0].extent[2],
-                        maxy: layer.BoundingBox[0].extent[3],
+                        host: this.host,
+                        minx: bbox[0],
+                        miny: bbox[1],
+                        maxx: bbox[2],
+                        maxy: bbox[3],
                         attribution: layer.Attribution,
                         abstract: layer.Abstract,
                         legend:layer.Style[0].LegendURL[0].OnlineResource,
@@ -58,15 +66,12 @@ class ServiceLayers{
                 reject('url parameter is required');
             }
             
-            let urlValidated = validateUrl(url)
-            this.url = urlValidated.capability;
-            this.host = urlValidated.host;
-            // this.url = url;
-
-            // console.log('validated',validateUrl(url));
+            let validatedUrl = validateUrl(url)
+            this.url = validatedUrl.capability;
+            this.host = validatedUrl.host;
 
             // Get data
-            return fetch(this.url,{mode: 'cors'})
+            return fetch(this.url)
             .then(function (response) {
                 return response.text();
             })
@@ -76,7 +81,7 @@ class ServiceLayers{
                 // Parse and resolve
                 resolve(wmsParser.parse(text));
             }).catch((error)=>{
-                reject('Malformed wms url',error);
+                reject(error);
             })
         })
 
@@ -84,33 +89,8 @@ class ServiceLayers{
 }
 
 function generateId() {
-    // A horrible but quickly way to parse String
+    // A horrible but quickly way to parse String (+ "")
     return 'wms-'+(new Date().getTime() + "").substr(6);
-}
-
-function getHost(getCapabilitiesURL) {
-    let scheme = getCapabilitiesURL.includes('http') || getCapabilitiesURL.includes('https');
-    
-    let newURL = "";
-
-    if (scheme) {
-        // Se recorta la url para dejar por fuera el scheme http o https
-        newURL = getCapabilitiesURL.split('//')[1];
-    }else{
-        newURL = getCapabilitiesURL;
-    }
-
-    if (newURL.includes('geoserver')) {
-        newURL = newURL.split('/');
-        newURL = newURL.splice(0,3).join('/');
-
-    }else{
-        newURL = newURL.split('/');
-        newURL = newURL.splice(0,2).join('/');
-
-    }
-
-    return 'https://'+newURL+'/wms?';
 }
 
 /**
@@ -118,10 +98,6 @@ function getHost(getCapabilitiesURL) {
  * @param {String} url to getCapabilities
  * @returns {Object} capability url and host
  */
-
-// https://sig.se.gob.ar/wmspubmap?service=wms&request=GetCapabilities&version=1.3.0
-
-// https://sig.se.gob.ar/wmspubmap?service=wms&request=GetCapabilities&version=1.3.0
 function validateUrl(url) {
     // create an element "a" to use its properties
     var a = document.createElement('a');
@@ -131,39 +107,4 @@ function validateUrl(url) {
         host: a.origin + a.pathname,
         capability: a.origin + a.pathname + '?service=wms&request=GetCapabilities'
     }
-    // let service = url.includes('service=wms');
-    // let getCapabilities = url.includes('request=GetCapabilities');
-
-    // let newURL = "";
-
-    // if(!service || !getCapabilities){
-    //     let scheme = url.includes('http') || url.includes('https');
-
-    //     if (scheme) {
-    //         // Se recorta la url para dejar por fuera el schemeo http o https
-    //         newURL = url.split('//')[1];
-    //     }else{
-    //         newURL = url;
-    //     }
-
-    //     if (newURL.includes('geoserver')) {
-    //         newURL = newURL.split('/');
-    //         newURL = newURL.splice(0,3).join('/');
-
-    //     }else{
-    //         newURL = newURL.split('/');
-    //         newURL = newURL.splice(0,2).join('/');
-
-    //     }
-
-    //     return 'https://'+newURL+'/ows?service=wms&version=1.3.0&request=GetCapabilities';
-    // }
-
-    // if (url.includes('https')) {
-    //     url = url.replace('https','http');
-    // }else if(!url.includes('http')) {
-    //     url = 'https://'+url
-    // }
-    // console.log(url);
-    // return url;
 }

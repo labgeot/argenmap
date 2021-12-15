@@ -36,7 +36,7 @@ class ModalService{
   }
 
   createModal() {
-      let modalContainer = document.createElement("div")
+    let modalContainer = document.createElement("div")
     modalContainer.id = "modalLoadServices"
     modalContainer.className = "modalLoadServices"
 
@@ -57,8 +57,6 @@ class ModalService{
       document.getElementById("iconloadservices-container").disabled = false;
       document.getElementById("modalloadservices").style.color = "black";
       openService=false;
-      // openService = false;
-      // currentLayers = [];
     };
     s_sec.append(btnclose);
 
@@ -73,14 +71,12 @@ class ModalService{
     
     let form = document.createElement("form")
     form.className = "wms-form"
-    
-    // http://sipan.inta.gov.ar/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities
-    
+    form.addEventListener('submit', handleURLInput, false);
     form.innerHTML = `
     <div class="input-group">
     <span class="input-group-addon" id="basic-addon1"><i class="fas fa-link"></i></span>
     <input value="http://nodoide.catamarca.gob.ar/geoserver/idecat/ows?service=wms&version=1.3.0&request=GetCapabilities" type="text" name="input-url" class="form-control" placeholder="http://.../geoserver/ows?service=wms&version=1.3.0....." aria-describedby="basic-addon1">
-    <span class="input-group-addon" id="buttonConectar" onclick="handleURLInput()">Conectar</span>
+    <span class="input-group-addon" id="buttonConectar" onclick="handleURLInput(event)">Conectar</span>
     </div>
     `
     
@@ -95,7 +91,7 @@ class ModalService{
     alert.className = "alert alert-danger"
     alert.setAttribute('id','wrongURL');
     alert.innerHTML = `
-      <strong>Ups!</strong> El formato de la URL es incorrecto. <small>Esperado: http://dominio.com/geoserver/workspace/service</small>
+      <strong>Ups!</strong> No fué posible conectar con el servicio<br><small style="margin-top:6px;display:block">El formato dado puede no ser el correcto o el servidor no acepta solicitudes de orígenes cruzados (<a href="https://developer.mozilla.org/es/docs/Web/HTTP/CORS" class="text-danger" target="_blank" alt="Sobre CORS" title="Sobre CORS"><strong><u>CORS</u></strong></a>)</small>
     `;
 
     let button = document.createElement("button");
@@ -126,8 +122,94 @@ class ModalService{
       document.getElementById("iconloadservices-container").disabled = true;
       document.getElementById("modalloadservices").style.color = "grey";
       modalService.createModal();
-      servicesLoaded = [];
-      layersIndex = [];
+
+      // Show layers and services loaded previosuly
+      if (selectedServiceLayers.length) {
+        for (let sourceId in servicesLoaded) {
+          let service = servicesLoaded[sourceId];
+          let layers = service.layers;
+
+          console.log(service);
+
+          // Create the container and show the data
+          let wmsResultContainer = document.createElement('div');
+          // Show title and layers count
+          let title = service.title;
+          let serviceID = service.id;
+          let header = document.createElement('div');
+          header.classList.add("page-header");
+          header.innerHTML = `
+              <form class="title-service" submit="saveServiceTitle(${serviceID},event)">
+                <h5 id="title-text-${serviceID}">${title}</h5>
+                <input type="text" class="title-input-service" id="title-input-${serviceID}">
+              </form>
+              `;
+          let editButton = document.createElement('button');
+          editButton.classList.add('fas');
+          editButton.classList.add('fa-pen-square');
+          editButton.setAttribute('id',`title-edit-${serviceID}`);
+          editButton.onclick = function (event) {
+            editServiceTitle(serviceID,event)
+          };     
+        
+          let saveButton = document.createElement('button');
+          saveButton.classList.add('fas');
+          saveButton.classList.add('fa-save');
+          saveButton.setAttribute('id',`title-save-${serviceID}`);
+          saveButton.onclick = function (event) {
+            saveServiceTitle(serviceID,event)
+          };
+          saveButton.style.display = 'none';
+          
+          header.childNodes[1].append(editButton);
+          header.childNodes[1].append(saveButton);
+    
+          wmsResultContainer.append(header);
+        
+          let checkLabel = document.createElement('label');
+          checkLabel.classList.add("all-layers-checkbox");
+          checkLabel.innerHTML = `
+          <span class="tree-line">─</span><input type="checkbox" value="${serviceID}" onchange="handleAllLayersCheck(event)">&nbsp;Agregar todas <small>(${Object.keys(layers).length} capas)</small>
+          `;
+          wmsResultContainer.append(checkLabel);
+    
+          // Show layers and checkboxes
+          for (let i in layers) {
+            let layer = layers[i];
+
+            layersIndex[layer.name] = service.id;
+            servicesLoaded[service.id].layers[layer.name] = layer;
+
+            // let selected = selectedServiceLayers.some(e => e == layer.name);
+    
+            let checkLabel = document.createElement('label');
+
+            let span = document.createElement('span');
+            span.classList.add('tree-line');
+            span.innerText = '──';
+            
+            let checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = layer.name;
+            checkbox.checked = selectedServiceLayers.some(e => e == layer.name);
+            // checkbox.onclick = handleLayerCheck(event);
+            checkbox.addEventListener('change', handleLayerCheck, false);
+
+            let title = document.createTextNode(` ${capitalize(layer.title)}`);
+
+            checkLabel.append(span)
+            checkLabel.append(checkbox)
+            checkLabel.append(title)
+
+            wmsResultContainer.append(checkLabel);
+          }
+
+          // Add the container to the modal
+          document.getElementById('select-layers-container').prepend(wmsResultContainer);
+          document.getElementById('buttonEnd').style.display = 'block';
+          
+        }
+      }
     }
   }
 
@@ -136,7 +218,8 @@ class ModalService{
 let modalService = new ModalService();
 
 
-function handleURLInput() {
+function handleURLInput(e) {
+  e.preventDefault();
   let url = document.getElementsByName('input-url')[0].value;
 
   const serviceLayer = new ServiceLayers();
@@ -159,12 +242,11 @@ function handleURLInput() {
     let header = document.createElement('div');
     header.classList.add("page-header");
     header.innerHTML = `
-        <div class="title-service">
+        <form class="title-service" submit="saveServiceTitle(${serviceID},event)">
           <h5 id="title-text-${serviceID}">${title}</h5>
           <input type="text" class="title-input-service" id="title-input-${serviceID}">
-        </div>
+        </form>
         `;
-    // <small>${layers.length} capas obtenidas</small>
     let editButton = document.createElement('button');
     editButton.classList.add('fas');
     editButton.classList.add('fa-pen-square');
@@ -196,7 +278,6 @@ function handleURLInput() {
 
     // Show layers and checkboxes
     layers.forEach((layer)=>{
-      // serviceLayers.push(layer);
       layersIndex[layer.name] = serviceLayer.getId();
       servicesLoaded[serviceLayer.getId()].layers[layer.name] = layer;
 
@@ -210,13 +291,14 @@ function handleURLInput() {
     document.getElementById('select-layers-container').prepend(wmsResultContainer);
 
   }).catch((error)=>{ 
-    console.error(error); 
+    console.error(error);
     document.getElementById('wrongURL').style.display = 'block';
   });
 }
 
-function editServiceTitle(serviceID,event) {
-  event.target.style.display = 'none';
+function editServiceTitle(serviceID, event) {
+  event.preventDefault();
+  event.target.remove();
 
   let text = document.getElementById(`title-text-${serviceID}`);
   let input = document.getElementById(`title-input-${serviceID}`);
@@ -232,7 +314,8 @@ function editServiceTitle(serviceID,event) {
   input.focus();
 }
 
-function saveServiceTitle(serviceID,event) {
+function saveServiceTitle(serviceID, event) {
+  event.preventDefault();
   event.target.style.display = 'none';
   
   let text = document.getElementById(`title-text-${serviceID}`);
@@ -246,30 +329,25 @@ function saveServiceTitle(serviceID,event) {
   text.style.display = 'block';
   input.style.display = 'none';
 
-  let editButton = document.getElementById(`title-edit-${serviceID}`);
-  editButton.style.display = 'block';
+  let editButton = document.createElement('button');
+  editButton.classList.add('fas');
+  editButton.classList.add('fa-pen-square');
+  editButton.setAttribute('id',`title-edit-${serviceID}`);
+  editButton.onclick = function (event) {
+    editServiceTitle(serviceID,event)
+  };
+
+  document.getElementsByClassName('title-service')[0].appendChild(editButton);
 }
 
 
 function handleAllLayersCheck(e){
-  // console.log(servicesLoaded[e.target.value].layers);
-
   if(e.target.checked){
-    // console.log(servicesLoaded[e.target.value]);
-    
-    // servicesLoaded[e.target.value].layers.forEach((layer,id)=>{
-    //   console.log('h');
-    //   console.info(id,layer);
-    // })
-
     for(let layer_name in servicesLoaded[e.target.value].layers){
-      // console.log(layer);
-      // console.log(servicesLoaded[e.target.value].layers[layer_name])
       document.querySelector(`input[value='${layer_name}']`).checked = true
       selectedServiceLayers.push(layer_name);
       menu_ui.addLayerToGroup(servicesLoaded[layersIndex[layer_name]].title,layer_name,layersIndex[layer_name],layer_name,servicesLoaded[layersIndex[layer_name]].layers[layer_name])
     }
-    
   }else{
     let groupName;
     for(let layer_name in servicesLoaded[e.target.value].layers){
@@ -283,18 +361,18 @@ function handleAllLayersCheck(e){
         }
       }
     }
-    
     menu_ui.removeLayersGroup(groupName);
   }
 }
 
 function handleLayerCheck(e) {
+  console.log(e);
   if(e.target.checked){
     selectedServiceLayers.push(e.target.value);
     menu_ui.addLayerToGroup(servicesLoaded[layersIndex[e.target.value]].title,e.target.value,layersIndex[e.target.value],e.target.value,servicesLoaded[layersIndex[e.target.value]].layers[e.target.value])
   }else{
     menu_ui.removeLayerFromGroup(servicesLoaded[layersIndex[e.target.value]].title,e.target.value,layersIndex[e.target.value],e.target.value,servicesLoaded[layersIndex[e.target.value]].layers[e.target.value])
-    // document.querySelector(`input[value='${e.target.value}']`).checked = false
+
     for (let i in selectedServiceLayers) {
       if (selectedServiceLayers[i] === e.target.value) {
         selectedServiceLayers.splice(i,1);
@@ -304,7 +382,11 @@ function handleLayerCheck(e) {
   }
 }
 
-
+function preventSubmit(e) {
+  console.log('voy a prevenir el ..');
+  e.preventDefault();
+  
+}
 
 function capitalize(word) {
   return word[0].toUpperCase() + word.slice(1).toLowerCase();
