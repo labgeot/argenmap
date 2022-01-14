@@ -2519,6 +2519,7 @@ function loadWmsTpl (objLayer) {
                 return;
             }
         });
+		// TODO se crea la capa de leaflet
         //var wmsSource = new L.WMS.source(wmsUrl + "/wms?", {
         var wmsSource = new MySource(objLayer.capa.getHostWMS(), {
             transparent: true,
@@ -2528,6 +2529,7 @@ function loadWmsTpl (objLayer) {
             format: 'image/png',
             INFO_FORMAT: objLayer.capa.featureInfoFormat
         });
+		// TODO se agrega al array que contiene las capas visualizadas
         overlayMaps[objLayer.nombre] = wmsSource.getLayer(objLayer.capa.nombre);
     }
 

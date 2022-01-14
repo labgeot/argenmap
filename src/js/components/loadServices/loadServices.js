@@ -205,6 +205,16 @@ async function handleURLInput(e) {
 
 
 	serviceLayer.loadWMS(url).then((layers)=>{
+		// Add the service to resources
+		let resource = new Resource(serviceLayer.title, serviceLayer.abstract, 'wms', null, serviceLayer.host);
+		layers.forEach((l)=>{
+			l['resource_id']=resource.getId();
+			catalog.addLayer(l);
+		});
+
+		resources.push(resource);
+
+
 		if(document.getElementById('wrongURL')) document.getElementById('wrongURL').style.display = 'none';
 		if(document.getElementById('buttonEnd')) document.getElementById('buttonEnd').style.display = 'block';
 		// Add the service and layers to the array with loaded layers

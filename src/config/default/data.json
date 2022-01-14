@@ -112,6 +112,17 @@
       "servicio": "wms",
       "version": "1.3.0",
       "host": "https://wms.ign.gob.ar/geoserver/modelos-digitales-elevaciones/wms"
+    },
+    {
+      "type": "wmslayer",
+      "peso": 130,
+      "nombre": "Catamarca (IDECAT)",
+      "short_abstract": "Información provista por la Dirección de Infraestructura de Datos Espaciales de Catamarca",
+      "class": "",
+      "seccion": "mde",
+      "servicio": "wms",
+      "version": "1.3.0",
+      "host": "http://nodoide.catamarca.gob.ar/geoserver/idecat/ows"
     }
   ],
   "template": "ign-geoportal-basic"

@@ -1,0 +1,250 @@
+#catalog-menu-search {
+  display: flex;
+  align-items: center;
+}
+
+#catalog-menu-search input {
+  width: 100%;
+  margin-right: .25rem;
+}
+
+#catalog-menu-search .btn {
+  background-color: #5bc0de;
+}
+#catalog-menu-search .btn:hover {
+  background-color: #54b0cc;
+  border-color: #4ca1bb;
+}
+#catalog-menu-search .btn:active {
+  background-color: #54b0cc;
+  border-color: #4ca1bb;
+}
+
+#catalog-menu-search .btn svg {
+  padding-top: 3px;
+}
+
+#catalog-list {
+  max-height: 53vh;
+  overflow-y: scroll;
+}
+
+
+.catalog-list-item {
+  background: #9bdaff52;
+  padding: .8rem 1rem;
+  border-radius: 4px;
+  margin-bottom: .6rem;
+}
+
+.catalog-list-item h6 {
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+.layers-count-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-flow: row wrap;
+}
+
+.layers-count-action span {
+  display: flex;
+  align-items: center;
+}
+.layers-count-action span svg{
+  margin-right: 4px;
+}
+
+
+.checkbox-item{
+  margin-bottom: .25rem;
+  width: 100%;
+  font-weight: normal;
+}
+
+.checkbox-item input {
+  margin-right: .25rem;
+}
+
+#checklist-container {
+  max-height: 282px;
+  overflow-y: scroll;
+  margin-top: 0.4rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+.d-flex-between-center {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-link {
+  padding:0
+}
+
+
+
+
+
+
+
+#catalog-menu-modal {
+  overflow: hidden;
+  float: none;
+  border-radius: 6px;
+  z-index: 1200;
+  border: 3px;
+  padding: 8px 12px;
+  background-color: white;
+  top: 100px;
+  position: absolute;
+  margin-bottom: 10px;
+  -moz-box-shadow: inset 0 0 10px #000000;
+  -webkit-box-shadow: inset 0 0 10px #000000;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 70%;
+  left: calc(100% / 5);
+
+  max-height: 80vh;
+  overflow-y: scroll;
+}
+
+#catalog-menu-button {
+  position: absolute;
+  flex-direction: column;
+  width: 34px;
+  height: 34px;
+  color: black;
+  font-size: 1.1em;
+  top: 270px;
+  left: 2px;
+  z-index: 999;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  background-color: #f8fcff;
+}
+
+#catalog-menu-button:hover {
+  background-color: #f4f4f4;
+}
+
+#catalog-menu-button-content {
+  height: 100%;
+  width: 100%;
+  flex: 4;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
+  border-color: #cccccc;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 600px) {
+  #catalog-menu-button {
+    top: 422px;
+    left: 10px;
+  }
+
+  #catalog-menu-modal {
+    width: 56%;
+    left: calc(100% / 4);
+  }
+
+  .modalMainSection {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .modalNav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modalNavButton {
+    /* margin-right: 0; */
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 800px) {
+  #catalog-menu-modal {
+    width: 50%;
+  }
+}
+
+/* Large devices (tablets, 768px and up) */
+@media (min-width: 992px) {
+  #catalog-menu-modal {
+    width: 34%;
+    left: calc(100% / 2.5);
+  }
+}
+
+/* X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  #catalog-menu-modal {
+    width: 34%;
+    left: calc(100% / 2.4);
+  }
+}
+
+@media (max-width: 768px) {
+  /* #catalog-menu-modal {
+    left: 45px;
+    top: 50px;
+    max-width: 700px;
+  } */
+
+  /* #catalog-menu-button {
+    top: 334px;
+  } */
+}
+@media (max-width: 600px) {
+  /* #catalog-menu-modal {
+    left: 45px;
+    top: 50px;
+    max-width: 580px;
+  } */
+
+  /* #catalog-menu-button {
+    left: 2px !important;
+    top: 264px;
+  } */
+}
+@media (max-width: 480px) {
+  /* #catalog-menu-modal {
+    left: 45px;
+    top: 50px;
+    max-width: 300px;
+  } */
+}
+@media (max-width: 360px) {
+  /* #catalog-menu-modal {
+    left: 45px;
+    top: 50px;
+    max-width: 250px;
+  } */
+}
+
+/* @media (max-height: 500px) {
+  #catalog-menu-button {
+    left: 34px;
+    top: 188px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    width: 32px;
+    height: 32px;
+  }
+} */

@@ -3,6 +3,10 @@ var baseLayersInfo = {};
 var selectedBasemap = null;
 let menu_ui = new Menu_UI;
 var geoProcessingManager = null;
+
+var catalog = new Catalog();
+var resources = [];
+
 const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
   impresorBaseMap = new ImpresorCapasBaseHTML(),
   impresorGroup = new ImpresorGrupoHTML(),
@@ -333,6 +337,36 @@ async function loadTemplate(data, isDefaultTemplate) {
   $(document).ready(async function () {
     await app.init(data);
 
+    // TODO Se agrega la data al catalogo
+    
+    data.items.forEach((service)=>{
+      var serviceLayer = new ServiceLayers();
+      if(service.type!='basemap'){
+        let resource = new Resource(service.nombre, service.short_abstract, service.servicio, service.version, service.host);
+        resources.push(resource);
+
+        serviceLayer.loadWMS(service.host).then((layers)=>{
+          // Add the service and layers to the array with loaded layers
+          // servicesLoaded[serviceLayer.getId()] = {
+          //   title: serviceLayer.title,
+          //   id: serviceLayer.id,
+          //   abstract: serviceLayer.abstract,
+          //   layers: [],
+          //   host:serviceLayer.host,
+          // }
+          layers.forEach((l)=>{
+            l['resource_id']=resource.getId();
+            catalog.addLayer(l);
+          });
+        }).catch((error)=>{
+          console.error(error);
+          // if(error.message.toLowerCase().includes('cors')){
+          //   new UserMessage('El servidor no permite el intercambio de recursos de origen cruzado o CORS', true, 'error');
+          // }
+        })
+      }
+    });
+
     //Template
     template = app.template; // define wich template to use
 
@@ -437,10 +471,19 @@ async function loadTemplate(data, isDefaultTemplate) {
         const loadLayersModal = new LoadLayersModal;
         loadLayersModal.createComponent();
 
+        const catalogMenuComponent = new CatalogMenuModal;
+        catalogMenuComponent.createComponent();
+
         const sidebarTool = new SidebarTools;
         sidebarTool.createComponent();
 
         setProperStyleToCtrlBtns();
+
+        // Show a message in the console
+        console.log('%c Argenmap ', 'font-size: 24px;color: #37bbed;font-weight: bold;font-family:sans');
+        console.log('%c 🌎 Desarrollo del Instituto Geográfico Nacional ', 'font-size: 12px;color: #37bbed;font-weight: bold;font-family:sans');
+        console.log('%c 🛠 Te invitamos a contribuir en GitHub ', 'font-size: 12px;color: #37bbed;font-weight: bold;font-family:sans');
+        console.log('🔗 https://github.com/ign-argentina/argenmap');
 
         if (loadGeoprocessing) {
           $('head').append('<link rel="stylesheet" type="text/css" href="src/js/components/geoprocessing/geoprocessing.css">');
