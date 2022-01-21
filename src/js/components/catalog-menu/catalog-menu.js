@@ -20,12 +20,14 @@ class CatalogMenuModal {
 	}
 }
 
+CATALOG_NEW_VIEW = {
+	layers:[],
+	title:null
+}
+
 class CMModal {
 	constructor() {
-		this.newView = {
-			layers:[],
-			title:null
-		}
+		
 		// this.actions = [
 		// 	{
 		// 		name: 'WMS',
@@ -110,6 +112,10 @@ class CMModal {
         `;
         divContainer.appendChild(form);
 
+		let newViewContainer = document.createElement('div');
+		newViewContainer.id = 'catalog-new-view-container';
+		divContainer.appendChild(newViewContainer);
+
 
 		/**
 		 * Resource list
@@ -158,45 +164,63 @@ class CMModal {
 	
 					input.onchange = (e) => {
 						if(e.target.checked){
-							this.newView.layers.push(layer_id);
+							CATALOG_NEW_VIEW.layers.push(layer_id);
 	
 							if (document.getElementById('catalog-new-view')) document.getElementById('catalog-new-view').remove();
 		
 							let catalogNewView = document.createElement('div');
 							catalogNewView.id ='catalog-new-view';
 	
-							catalogNewView.append(this.createTitleElement('h6','Nueva vista'));
-							let input = document.createElement('input');
-							input.onchange = (e) => {
-								this.newView.title = e.target.value;
-							}
-							catalogNewView.append(input);
+							catalogNewView.append(this.createTitleElement('h6','Capas seleccionadas'));
+							
 							
 							let ul = document.createElement('ul');
-							this.newView.layers.forEach((layerViewId)=>{
+							CATALOG_NEW_VIEW.layers.forEach((layerViewId,i)=>{
 								let li = document.createElement('li');
-								li.innerText = catalog.layers[layerViewId].title;
+								li.innerHTML = `&#9900; ${catalog.layers[layerViewId].title}`;
+								let buttonRemove = document.createElement('button');
+								buttonRemove.innerHTML = `x`;
+								buttonRemove.onclick = function() {
+									CATALOG_NEW_VIEW.layers.splice(i,1);
+									li.remove();
+									input.checked = false;
+								}
+								li.append(buttonRemove);
 								ul.append(li);
 							})
 							
 							catalogNewView.append(ul);
+
+							let viewForm = document.createElement('form');
+							viewForm.id = 'catalog-new-view-form';
+
+							let input = document.createElement('input');
+							input.classList.add('form-control');
+							input.placeholder = "Nombre de la vista";
+							input.onchange = (e) => {
+								CATALOG_NEW_VIEW.title = e.target.value;
+							}
+							viewForm.append(input);
 	
 							let buttonView = document.createElement('button');
 							buttonView.innerText = `Crear vista`;
 							buttonView.classList.add('btn');
 							buttonView.classList.add('btn-sm');
-							buttonView.classList.add('btn-primary');
-							buttonView.onclick = () => {
-								catalog.addView(this.newView.title,'test description',this.newView.layers);
+							buttonView.classList.add('btn-info');
+							buttonView.onclick = (e) => {
+								e.preventDefault();
+								let newId = catalog.addView(CATALOG_NEW_VIEW.title,'test description',CATALOG_NEW_VIEW.layers);
+								menu_ui.addCatalogViewToMenu('Vistas del catálogo','catalog-views', newId, CATALOG_NEW_VIEW.title);
 								// updateLayersMenu(argenmap.views);
 								catalogNewView.remove();
-								this.newView = {
+								CATALOG_NEW_VIEW = {
 									title:null,
 									layers:[]
 								}
 							}
-							catalogNewView.append(buttonView);
-							divContainer.prepend(catalogNewView);
+							viewForm.append(buttonView);
+							catalogNewView.append(viewForm);
+							newViewContainer.append(catalogNewView);
 	
 						}
 	
@@ -306,6 +330,8 @@ class CMModal {
 		}
 		return frags.join(' ');
 	}
+
+	
 	
 
 	// showActions(actionIndx) {

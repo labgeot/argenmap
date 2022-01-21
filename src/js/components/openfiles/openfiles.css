@@ -61,10 +61,12 @@
 .file-layer{
   display: flex;
   flex-direction: row;
+  align-items: center;
   width: 100%;
   justify-content: space-between;
-  padding: 10px 1px 10px 1px; 
+  padding: 10px 5px;
   border:1px solid #ddd;
+  border-radius: 4px;
   background-color: white;
   user-select:none;
   margin-bottom: -1px;
@@ -108,8 +110,8 @@
 
 .file-layername{
   cursor: pointer;
-  width:75%;
-  padding-left: 5px;
+  width: 100%;
+  margin: 0 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   max-height: 56px;

@@ -1,3 +1,61 @@
+#catalog-new-view-container {
+  margin-top: .6rem;
+}
+
+#catalog-new-view {
+  background: #9bdaff52;
+  padding: .8rem 1rem;
+  border-radius: 4px;
+  margin-bottom: .6rem;
+}
+
+#catalog-new-view h6 {
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 1rem;
+  margin-top: .6rem;
+}
+
+#catalog-new-view ul li button {
+  margin-left: 4px;
+  padding-top: 0px;
+  background: none;
+  border: 1px solid rgb(219, 0, 0);
+  border-radius: 4px;
+  color: rgb(219, 0, 0);
+  font-weight: bold;
+  font-size: 9px;
+  position: relative;
+  top: -1px;
+}
+
+#catalog-new-view ul li button:hover {
+  color: #fff;
+  background-color: rgb(219, 0, 0);
+}
+
+#catalog-new-view ul {
+  padding-left: 0;
+}
+#catalog-new-view ul li{
+  list-style:none;
+  margin-bottom: 4px;
+}
+
+
+
+#catalog-new-view-form {
+  display: flex;
+  align-items: center;
+}
+
+#catalog-new-view-form input{
+  width: 100%;
+  margin-right: .25rem;
+}
+
+
+
 #catalog-menu-search {
   display: flex;
   align-items: center;
@@ -41,6 +99,7 @@
   font-weight: 600;
   margin: 0;
   margin-bottom: 1rem;
+  margin-top: .6rem;
 }
 
 .layers-count-action {
@@ -97,10 +156,6 @@
 
 
 
-
-
-
-
 #catalog-menu-modal {
   overflow: hidden;
   float: none;
@@ -109,7 +164,7 @@
   border: 3px;
   padding: 8px 12px;
   background-color: white;
-  top: 100px;
+  top: 74px;
   position: absolute;
   margin-bottom: 10px;
   -moz-box-shadow: inset 0 0 10px #000000;

@@ -21,17 +21,29 @@ class Catalog {
             title:title,
             description:description,
             layers:[],
+            active:false,
+            _layers:[]
             // legend: //TODO Add an icon from any Layer?
         }
 
         // At the moment it is only possible to add views passing the layer ID
         layers.forEach(layer_id => {
             view.layers.push(layer_id);
+
+            view._layers.push(
+                L.tileLayer.wms(this.layers[layer_id].host, {
+                    layers: this.layers[layer_id].name,
+                    format: 'image/png',
+                    transparent: true,
+                })
+            );
+
         });
 
-        this.views[this.uniqueIdFrom(this.views)] = view;
+        let id = this.uniqueIdFrom(this.views);
+        this.views[id] = view;
         console.log(`%c ✓ view ${title} added`, 'color: #0f0');
-        return view;
+        return id;
     }
 
     getViews(){ return this.views }
@@ -40,12 +52,31 @@ class Catalog {
         let layers_id = this.views[view_id].layers;
 
         for (let layer_id of layers_id) {
-            L.tileLayer.wms(this.layers[layer_id].host, {
-                layers: this.layers[layer_id].name,
-                format: 'image/png',
-                transparent: true,
-            }).addTo(mapa);
+            this.views[view_id]._layers.push(
+                L.tileLayer.wms(this.layers[layer_id].host, {
+                    layers: this.layers[layer_id].name,
+                    format: 'image/png',
+                    transparent: true,
+                }).addTo(mapa)
+            );
         }
+    }
+
+    getLayersFromView(view_id){
+        return this.views[view_id].layers.map((layer_id => {
+            return this.layers[layer_id];
+        }));
+    }
+
+    getBboxLayersFromView(view_id){
+        return this.views[view_id].layers.map((layer_id => {
+            return {
+                maxx: this.layers[layer_id].maxx,
+                maxy: this.layers[layer_id].maxy,
+                minx: this.layers[layer_id].minx,
+                miny: this.layers[layer_id].miny,
+            };
+        }));
     }
 
     getLayersBy(key,value){

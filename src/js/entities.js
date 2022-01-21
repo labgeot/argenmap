@@ -3073,6 +3073,143 @@ class Menu_UI{
         
     }
 
+
+    addCatalogViewToMenu(groupname, textName, id, title){
+        let groupnamev = groupname.replace(/ /g, "_")
+        let main = document.getElementById("lista-"+groupnamev)
+        let id_options_container = "opt-c-"+id
+        if(!main){this.addSection(groupname)}
+
+        let content = document.getElementById(groupnamev+"-panel-body")
+        let layer_container = document.createElement("div")
+        layer_container.id = "fl-" +id
+        layer_container.className = "file-layer-container"
+
+        let layer_item = document.createElement("div")
+        layer_item.id = "srvcLyr-"+id+textName
+        layer_item.className = "file-layer"
+        
+        let img_icon = document.createElement("div")
+        img_icon.className = "loadservice-layer-img"
+        img_icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-layers-half" viewBox="0 0 16 16">
+        <path d="M8.235 1.559a.5.5 0 0 0-.47 0l-7.5 4a.5.5 0 0 0 0 .882L3.188 8 .264 9.559a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882L12.813 8l2.922-1.559a.5.5 0 0 0 0-.882l-7.5-4zM8 9.433 1.562 6 8 2.567 14.438 6 8 9.433z"/>
+      </svg>`
+        // img_icon.innerHTML = `<img loading="lazy" src="">`
+        img_icon.onclick = function(){
+            clickGeometryLayer(id, true)
+        }
+
+        let layer_name = document.createElement("div")
+        layer_name.className = "file-layername"
+        let capitalizedTitle = title;
+        layer_name.innerHTML= "<a>"+capitalizedTitle+"</a>"
+        layer_name.title = textName;
+        layer_name.onclick = function(){
+            layer_item.classList.toggle('active');
+            
+            if (catalog.views[id].active) {
+                
+                catalog.views[id]._layers.forEach(L_layer=>{
+                    mapa.removeLayer(L_layer);
+                });
+                catalog.views[id].active = false;
+            }else{
+                catalog.views[id]._layers.forEach(L_layer=>{
+                    L_layer.addTo(mapa);
+                });
+                catalog.views[id].active = true;
+            }
+        }        
+        
+        let zoom_button = document.createElement("div")
+        zoom_button.className = "loadservice-layer-img"
+        zoom_button.innerHTML = `<i class="fas fa-search-plus" title="Zoom a capa"></i>`
+        zoom_button.onclick = function(){
+
+            layer_item.classList.toggle('active');
+            
+            if (catalog.views[id].active) {
+                //Si la vista está activa
+                catalog.views[id]._layers.forEach(L_layer=>{
+                    mapa.removeLayer(L_layer);
+                });
+                catalog.views[id].active = false;
+            }else{
+                // Mostrar capas en vista no activa
+                catalog.views[id]._layers.forEach(L_layer=>{
+                    L_layer.addTo(mapa);
+                });
+
+                // Get bbox and center the map
+                let bounds = maxArrBB(catalog.getBboxLayersFromView(id));
+                mapa.fitBounds(bounds);
+
+
+
+                if (bbLayers.length>1) {
+                    let bounds = maxBB(bbLayers[0],bbLayers[1]);
+                }else {
+                    let bounds = [[bbLayers[0].maxy, bbLayers[0].maxx], [bbLayers[0].miny, bbLayers[0].minx]];
+                    mapa.fitBounds(bounds);
+                }
+
+                catalog.views[id].active = true;
+            }
+        }
+
+
+        layer_item.append(img_icon)
+        layer_item.append(layer_name)
+        layer_item.append(zoom_button)
+        layer_container.append(layer_item)
+        content.appendChild(layer_container)        
+    }
+    
+}
+// TODO Acomodar esta funcion (deberia ser parte de Catalog?)
+function maxBB (bb1,bb2){
+    let minx, miny, maxx, maxy;
+
+
+    if (bb1.minx<bb2.minx) {
+        minx = bb1.minx
+    }else {minx = bb2.minx}
+    
+    if (bb1.miny<bb2.miny) {
+        miny = bb1.miny
+    }else {miny = bb2.miny}
+
+    if (bb1.maxx>bb2.maxx) {
+        maxx = bb1.maxx
+    }else {maxx = bb2.maxx}
+
+    if (bb1.maxy>bb2.maxy) {
+        maxy = bb1.maxy
+    }else {maxy = bb2.maxy}
+
+
+    return [[maxy, maxx], [miny, minx]];
+    
+}
+// TODO Acomodar esta funcion (deberia ser parte de Catalog?)
+function maxArrBB (layersBB){
+    let minx, miny, maxx, maxy;
+
+    layersBB.forEach((layer) => {
+        if (minx==undefined) {
+            minx=layer.minx
+            miny=layer.miny
+            maxx=layer.maxx
+            maxy=layer.maxy
+        }else {
+            if (layer.minx < minx) minx = layer.minx;
+            if (layer.miny < miny) miny = layer.miny;
+            if (layer.maxx > maxx) maxx = layer.maxx;
+            if (layer.maxy > maxy) maxy = layer.maxy;
+        }
+    });
+
+    return [[maxy, maxx], [miny, minx]];    
 }
 
 class Geometry {
