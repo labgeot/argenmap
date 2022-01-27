@@ -11,8 +11,6 @@ class CatalogMenuModal {
     `;
 	}
 
-
-
 	createComponent() {
 		const elem = document.createElement("div");
 		elem.innerHTML = this.component;
@@ -20,36 +18,14 @@ class CatalogMenuModal {
 	}
 }
 
-CATALOG_NEW_VIEW = {
+var _catalogNewView = {
 	layers:[],
 	title:null
 }
 
 class CMModal {
 	constructor() {
-		
-		// this.actions = [
-		// 	{
-		// 		name: 'WMS',
-		// 		id: 'wms-action',
-		// 		icon: 'src/js/components/loadServices/icon-load-services.svg',
-		// 		component: new IconModalLoadServices
-		// 	},
-		// 	{
-		// 		name: 'Archivos',
-		// 		id: 'files-action',
-		// 		icon: 'src/js/components/openfiles/folder-open-solid.svg',
-		// 		component: new IconModalGeojson
-		// 	},
-		// 	// {
-		// 	// 	name: 'WMTS',
-		// 	// 	id: 'wmts-action',
-		// 	// 	icon: 'src/js/components/wmts/wmts-solid.svg',
-		// 	// 	component: new WmtsLoadLayers
-		// 	// },
-		// ];
-
-		// this.selectedAction = 0;
+	
 	}
 
 
@@ -87,14 +63,10 @@ class CMModal {
 			CATALOG_MENU_MODAL_OPEN = false;
 		};
 
-
-
-
 		header.appendChild(modalTitle);
 		header.appendChild(closeButton);
 
 		divContainer.appendChild(header);
-
 
 		/**
 		 * Search section
@@ -102,15 +74,98 @@ class CMModal {
 		divContainer.appendChild(this.createTitleElement('h6','Búsqueda de capas'));
 		let form = document.createElement('form');
         form.id = 'catalog-menu-search';
-        form.innerHTML = `
-            <input type="text" class="form-control" disabled>
-            <button class="btn btn-primary">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-					<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-				</svg>
-            </button>
+
+		let inputSearch = document.createElement('input');
+		inputSearch.classList.add('form-control');
+
+		let buttonSearch = document.createElement('button')
+		buttonSearch.classList.add('btn');
+		buttonSearch.classList.add('btn-primary');
+		buttonSearch.innerHTML= `
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+				<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+			</svg>
         `;
+
+		let searchResults = document.createElement('div');
+		searchResults.id = 'catalog-search-results';
+
+
+		inputSearch.oninput = (e) => {
+			setTimeout(() => {
+				if (e.target.value.length) {
+					let results = catalog.searchLayers(e.target.value,['name','title','abstract'],5).flatMap((resultLayer)=>{
+						if (_catalogNewView.layers.find((l)=>l==resultLayer.id)) return []
+						return resultLayer;
+					});
+					// console.log(results);
+					// searchResults.innerText = results.toString();
+					listSearchResults(results,searchResults);
+				}else {
+					listSearchResults([],searchResults);
+				}
+			}, 500);
+		}
+
+		function listSearchResults(results,container){
+			container.innerHTML = '';
+			if (!results.length) return null;
+			
+			let h = document.createElement('h6');
+			h.innerText = `${results.length} ${(results.length>1)?'resultados':'resultado'}`;
+			container.appendChild(h);
+
+			let listResults = document.createElement('ul');
+			listResults.classList.add('list-group');
+			results.forEach((layer)=>{
+				let li = document.createElement('li');
+				li.classList.add('list-group-item');
+
+				let label = document.createElement('span');
+				label.innerText = layer.title;
+				label.classList.add('label-add-result');
+
+				label.onclick = (e)=>{
+					_catalogNewView.layers.push(layer.id);
+					if(e.target.parentElement.parentElement.childNodes.length>1){
+						e.target.parentElement.remove();
+					}else{
+						// El elemento padre 'catalog-search-results' no deberia ser removido, solo vaciado
+						e.target.parentElement.parentElement.parentElement.innerHTML = '';
+					}
+					updateNewViewList();
+				}
+
+				li.appendChild(label);
+
+				let btnAdd = document.createElement('span');
+				btnAdd.classList.add('badge');
+				btnAdd.classList.add('btn-add-result');
+				btnAdd.innerText='+';
+				btnAdd.onclick = (e)=>{
+					_catalogNewView.layers.push(layer.id);
+					if(e.target.parentElement.parentElement.childNodes.length>1){
+						e.target.parentElement.remove();
+					}else{
+						// El elemento padre 'catalog-search-results' no deberia ser removido, solo vaciado
+						e.target.parentElement.parentElement.parentElement.innerHTML = '';
+					}
+					updateNewViewList();
+				}
+
+				li.appendChild(btnAdd);
+				listResults.appendChild(li);
+			})	
+
+			container.appendChild(listResults);
+
+
+		}
+
+		form.append(inputSearch);
+		form.append(buttonSearch);
         divContainer.appendChild(form);
+        divContainer.appendChild(searchResults);
 
 		let newViewContainer = document.createElement('div');
 		newViewContainer.id = 'catalog-new-view-container';
@@ -147,9 +202,24 @@ class CMModal {
 			button.innerText = `Seleccionar capas`;
 			button.classList.add('btn');
 			button.classList.add('btn-link');
+			button.setAttribute('state','closed');
+
 			button.onclick = (e) => {
+				// Si el contenedor estaba cerrado
+				if(e.target.getAttribute('state')=='opened'){
+					// Cambiamos el estado a abierto
+					e.target.innerText = 'Seleccionar capas'
+					e.target.setAttribute('state','closed');
+					if(document.getElementById('checklist-container')) document.getElementById('checklist-container').remove();
+					return null;
+				}
+
+				// Close other checklist container if was open
 				if (document.getElementById('checklist-container')) document.getElementById('checklist-container').remove();
-				// console.log(rsrc);
+				// Change btn link text
+				document.querySelectorAll(`.layers-count-action .btn-link`).forEach((btn)=>btn.innerText='Seleccionar capas');
+				// Set btn link open
+				e.target.setAttribute('state','opened');
 				e.target.innerText = 'Cerrar'
 	
 				let checkList = document.createElement('div');
@@ -161,71 +231,103 @@ class CMModal {
 					let input = document.createElement('input');
 					input.type = 'checkbox';
 					input.name = layer_id;
+
+					if(_catalogNewView.layers.find((l)=>l==layer_id)) input.checked = true;
 	
 					input.onchange = (e) => {
 						if(e.target.checked){
-							CATALOG_NEW_VIEW.layers.push(layer_id);
+							_catalogNewView.layers.push(layer_id);
 	
-							if (document.getElementById('catalog-new-view')) document.getElementById('catalog-new-view').remove();
+							// if (document.getElementById('catalog-new-view')) document.getElementById('catalog-new-view').remove();
 		
-							let catalogNewView = document.createElement('div');
-							catalogNewView.id ='catalog-new-view';
+							// let catalogNewView = document.createElement('div');
+							// catalogNewView.id ='catalog-new-view';
 	
-							catalogNewView.append(this.createTitleElement('h6','Capas seleccionadas'));
+							// catalogNewView.append(this.createTitleElement('h6','Capas seleccionadas'));
 							
 							
-							let ul = document.createElement('ul');
-							CATALOG_NEW_VIEW.layers.forEach((layerViewId,i)=>{
-								let li = document.createElement('li');
-								li.innerHTML = `&#9900; ${catalog.layers[layerViewId].title}`;
-								let buttonRemove = document.createElement('button');
-								buttonRemove.innerHTML = `x`;
-								buttonRemove.onclick = function() {
-									CATALOG_NEW_VIEW.layers.splice(i,1);
-									li.remove();
-									input.checked = false;
-								}
-								li.append(buttonRemove);
-								ul.append(li);
-							})
+							// let ul = document.createElement('ul');
 							
-							catalogNewView.append(ul);
+							// _catalogNewView.layers.forEach((layerViewId,i)=>{
+							// 	let li = document.createElement('li');
+							// 	li.innerHTML = `&#9900; ${catalog.layers[layerViewId].title}`;
+							// 	li.setAttribute('layerid', layerViewId);
+							// 	let buttonRemove = document.createElement('button');
+							// 	buttonRemove.innerHTML = `x`;
+							// 	buttonRemove.onclick = function() {
+							// 		let indx = _catalogNewView.layers.findIndex((l)=>l==layerViewId);
+							// 		if(indx!=-1) _catalogNewView.layers.splice(indx,1);
+							// 		li.remove();
+							// 		input.checked = false;
 
-							let viewForm = document.createElement('form');
-							viewForm.id = 'catalog-new-view-form';
+							// 		if(!_catalogNewView.layers.length) document.getElementById('catalog-new-view').remove();
+								
+							// 		if(document.getElementById('checklist-container')){
+							// 			// Update checkboxes
+							// 			for(let i of document.getElementById('checklist-container').childNodes){
+											
+							// 				let layerId = i.firstElementChild.name;
+							// 				let indx = _catalogNewView.layers.findIndex((l)=>l==layerId);
+							// 				console.log(indx);
+							// 				if(indx!=-1) {
+							// 					i.firstElementChild.checked = true
+							// 				}else {
+							// 					i.firstElementChild.checked = false
+							// 				}
+							// 			}
+							// 		}
+							// 	}
+							// 	li.append(buttonRemove);
+							// 	ul.append(li);
+							// })
+							
+							// catalogNewView.append(ul);
 
-							let input = document.createElement('input');
-							input.classList.add('form-control');
-							input.placeholder = "Nombre de la vista";
-							input.onchange = (e) => {
-								CATALOG_NEW_VIEW.title = e.target.value;
-							}
-							viewForm.append(input);
+							// let viewForm = document.createElement('form');
+							// viewForm.id = 'catalog-new-view-form';
+
+							// let input = document.createElement('input');
+							// input.classList.add('form-control');
+							// input.placeholder = "Nombre de la vista";
+							// input.onchange = (e) => {
+							// 	_catalogNewView.title = e.target.value;
+							// }
+							// viewForm.append(input);
 	
-							let buttonView = document.createElement('button');
-							buttonView.innerText = `Crear vista`;
-							buttonView.classList.add('btn');
-							buttonView.classList.add('btn-sm');
-							buttonView.classList.add('btn-info');
-							buttonView.onclick = (e) => {
-								e.preventDefault();
-								let newId = catalog.addView(CATALOG_NEW_VIEW.title,'test description',CATALOG_NEW_VIEW.layers);
-								menu_ui.addCatalogViewToMenu('Vistas del catálogo','catalog-views', newId, CATALOG_NEW_VIEW.title);
-								// updateLayersMenu(argenmap.views);
-								catalogNewView.remove();
-								CATALOG_NEW_VIEW = {
-									title:null,
-									layers:[]
-								}
-							}
-							viewForm.append(buttonView);
-							catalogNewView.append(viewForm);
-							newViewContainer.append(catalogNewView);
-	
+							// let buttonView = document.createElement('button');
+							// buttonView.innerText = `Crear vista`;
+							// buttonView.classList.add('btn');
+							// buttonView.classList.add('btn-sm');
+							// buttonView.classList.add('btn-info');
+							// buttonView.onclick = (e) => {
+							// 	e.preventDefault();
+							// 	let newId = catalog.addView(_catalogNewView.title,'test description',_catalogNewView.layers);
+							// 	menu_ui.addCatalogViewToMenu('Vistas del catálogo','catalog-views', newId, _catalogNewView.title);
+							// 	// updateLayersMenu(argenmap.views);
+							// 	catalogNewView.remove();
+							// 	_catalogNewView = {
+							// 		title:null,
+							// 		layers:[]
+							// 	}
+							// }
+							// viewForm.append(buttonView);
+							// catalogNewView.append(viewForm);
+							// newViewContainer.append(catalogNewView);
+						}else {
+							// Si el input no esta checked se quita de las newView layers
+							// Se obtiene el elemento li a traves del atributo layerid seteado inicialmente
+							// let el = document.querySelector(`li[layerid='${e.target.name}'`);
+							// if(el) el.remove();
+
+							// Se elimina la capa seleccionada para newView
+							let indx = _catalogNewView.layers.findIndex((l)=>l==e.target.name);
+							if(indx!=-1) _catalogNewView.layers.splice(indx,1);
+
+							
+							// // Si no hay mas capas seleccionadas se quita el elemento newView
+							// if(!_catalogNewView.layers.length) document.getElementById('catalog-new-view').remove();
 						}
-	
-	
-	
+						updateNewViewList();
 					}
 	
 					label.appendChild(input);
@@ -331,9 +433,6 @@ class CMModal {
 		return frags.join(' ');
 	}
 
-	
-	
-
 	// showActions(actionIndx) {
 	// 	let elements = document.querySelectorAll('.actionContent');
 	// 	elements.forEach(el => el.classList.add('disableAction'))
@@ -355,3 +454,93 @@ class CMModal {
 }
 
 let cmModal = new CMModal();
+
+
+function updateNewViewList(){
+	if (document.getElementById('catalog-new-view')) document.getElementById('catalog-new-view').remove();
+	
+	let newViewContainer = document.getElementById('catalog-new-view-container');
+
+	let catalogNewView = document.createElement('div');
+	catalogNewView.id ='catalog-new-view';
+
+
+	let h = document.createElement('h6');
+	h.innerText = 'Capas seleccionadas';
+	catalogNewView.append(h);
+	
+	
+	let ul = document.createElement('ul');
+	
+	if(_catalogNewView.layers.length){
+		_catalogNewView.layers.forEach((layerViewId,i)=>{
+			let li = document.createElement('li');
+			li.innerHTML = `&#9900; ${catalog.layers[layerViewId].title}`;
+			li.setAttribute('layerid', layerViewId);
+			let buttonRemove = document.createElement('button');
+			buttonRemove.innerHTML = `x`;
+			buttonRemove.onclick = function() {
+				let indx = _catalogNewView.layers.findIndex((l)=>l==layerViewId);
+				if(indx!=-1) _catalogNewView.layers.splice(indx,1);
+				li.remove();
+				input.checked = false;
+
+				if(!_catalogNewView.layers.length) document.getElementById('catalog-new-view').remove();
+			
+				if(document.getElementById('checklist-container')){
+					// Update checkboxes
+					for(let i of document.getElementById('checklist-container').childNodes){
+						
+						let layerId = i.firstElementChild.name;
+						let indx = _catalogNewView.layers.findIndex((l)=>l==layerId);
+						console.log(indx);
+						if(indx!=-1) {
+							i.firstElementChild.checked = true
+						}else {
+							i.firstElementChild.checked = false
+						}
+					}
+				}
+			}
+			li.append(buttonRemove);
+			ul.append(li);
+		})
+		
+		catalogNewView.append(ul);
+
+		let viewForm = document.createElement('form');
+		viewForm.id = 'catalog-new-view-form';
+
+		let input = document.createElement('input');
+		input.classList.add('form-control');
+		input.placeholder = "Nombre de la vista";
+		input.onchange = (e) => {
+			_catalogNewView.title = e.target.value;
+		}
+		viewForm.append(input);
+
+		let buttonView = document.createElement('button');
+		buttonView.innerText = `Crear vista`;
+		buttonView.classList.add('btn');
+		buttonView.classList.add('btn-sm');
+		buttonView.classList.add('btn-info');
+		buttonView.onclick = (e) => {
+			e.preventDefault();
+			let newId = catalog.addView(_catalogNewView.title,'test description',_catalogNewView.layers);
+			menu_ui.addCatalogViewToMenu('Vistas del catálogo','catalog-views', newId, _catalogNewView.title);
+			// updateLayersMenu(argenmap.views);
+			catalogNewView.remove();
+			_catalogNewView = {
+				title:null,
+				layers:[]
+			}
+			if(document.getElementById('checklist-container')) document.getElementById('checklist-container').remove();
+		}
+		viewForm.append(buttonView);
+		catalogNewView.append(viewForm);
+		newViewContainer.append(catalogNewView);
+
+	}else {
+		document.getElementById('catalog-new-view').remove();
+	}
+}

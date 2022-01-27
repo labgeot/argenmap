@@ -82,7 +82,7 @@
   },
   "title": "IGN - ARGENMAP",
   "website": "https://www.ign.gob.ar/",
-  "favicon": "https://www.ign.gob.ar/sites/default/files/favicon.png",
+  
   "geoprocessing": {
     "isActive": false,
     "availableProcesses": [

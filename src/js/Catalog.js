@@ -87,6 +87,31 @@ class Catalog {
         return layers;
     }
 
+    searchLayers(value,searchBy,maxResults){
+        if (searchBy==undefined || typeof searchBy != 'object') throw new Error('El parametro <searchBy> es obligatorio y debe ser de tipo Array');
+        let results = [];
+        let sanitizedValue = value.trim().toLowerCase();
+        // walk through the layers
+        Object.keys(this.layers).some((layer_id)=>{
+            // Cut the loop when the maximum results are reached (Optional)
+            if (maxResults!=undefined && results.length >= maxResults) return true; // True corta el bucle some
+            // Walk through the terms of search
+            searchBy.some((prop)=>{
+                if (this.layers[layer_id][prop]!=undefined) {
+                    if(typeof this.layers[layer_id][prop] == 'string' && this.layers[layer_id][prop].trim().toLowerCase().includes(sanitizedValue)){
+                        results.push({
+                            id:layer_id,
+                            name: this.layers[layer_id].name,
+                            title: this.layers[layer_id].title,
+                        });
+                        return true;
+                    }
+                }
+            })
+        });
+        return results;
+    }
+
     /**
      * Generates a unique random ID composed of numbers and letters, checking the existing IDs
      * @returns A string of a long between 9 and 12 characters

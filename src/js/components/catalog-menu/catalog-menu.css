@@ -1,3 +1,13 @@
+.btn-add-result {
+  background-color: #37bbed;
+  color: #fff;
+  cursor:pointer;
+}
+
+.label-add-result {
+  cursor:pointer;
+}
+
 #catalog-new-view-container {
   margin-top: .6rem;
 }
@@ -243,7 +253,7 @@
 /* Large devices (tablets, 768px and up) */
 @media (min-width: 992px) {
   #catalog-menu-modal {
-    width: 34%;
+    width: 45%;
     left: calc(100% / 2.5);
   }
 }
