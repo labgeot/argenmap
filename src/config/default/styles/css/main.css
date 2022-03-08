@@ -4,3 +4,32 @@ Personalizado
 .leaflet-container {
 	font: 12px/1.5 Roboto, sans-serif !important;
 }
+
+/*******************************
+Barra superior
+*******************************/
+.navbar {
+  background-color:  #46CA6A;
+}
+
+/*******************************
+Barra de menú
+*******************************/
+#sidebar-container {
+  background-color: #2F528F;
+}
+
+/*******************************
+Capas
+*******************************/
+.panel-default > .panel-heading {
+  background-color: #2F528F;
+}
+
+/*******************************
+Capas activas
+*******************************/
+
+.panel-body > .active {
+	background-color: #46CA6A;
+}
