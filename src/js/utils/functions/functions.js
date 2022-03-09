@@ -480,6 +480,20 @@ function loadTemplateStyleConfig(template, isDefaultTemplate) {
         $('#top-right-logo').attr("title","Ministerio de Defensa");
       }
       break;
+      case 'labgeot': {
+        $('head').append(`<link rel="shortcut icon" href="src/config/styles/images/favicon.ico" type="image/x-icon" />`);
+
+        //Change logotype
+        $('#top-left-logo-link').attr("href","https://www.labgeot.uns.edu.ar/");
+        $('#top-left-logo').attr("src","src/config/styles/images/logo.png");
+        $('#top-left-logo').attr("alt","Logo Instituto Geográfico Nacional");
+        $('#top-left-logo').attr("title","Instituto Geográfico Nacional");
+        // $('#top-right-logo-link').attr("href","https://www.argentina.gob.ar/defensa");
+        // $('#top-right-logo').attr("src","src/config/default/styles/images/logoMinDef.png");
+        // $('#top-right-logo').attr("alt","Logo Ministerio de Defensa");
+        // $('#top-right-logo').attr("title","Ministerio de Defensa");
+      }
+      break;
     }
 };
 

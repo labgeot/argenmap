@@ -9,9 +9,9 @@ const impresorItemCapaBase = new ImpresorItemCapaBaseHTML(),
   metaTagsInteraction = new MetaTagsInteraction(),
   app = {
     profile: "default",
-    profiles: {},
+    profiles: {}, 
     templates: [
-      "ign-geoportal-basic"
+      "labgeot"
     ],
 
     init: async function (data) {

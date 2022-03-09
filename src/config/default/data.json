@@ -62,7 +62,7 @@
     {
       "type": "wmslayer",
       "peso": 70,
-      "nombre": "Industria y servicios",
+      "nombre": "Industria y servicio",
       "short_abstract": "Industrias, producción agropecuaria, minería, energía, comunicaciones, etc.",
       "class": "",
       "seccion": "industria-servicios",
