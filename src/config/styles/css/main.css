@@ -1,0 +1,49 @@
+/*******************************
+Personalizado
+*******************************/
+.leaflet-container {
+	font: 12px/1.5 Roboto, sans-serif !important;
+}
+
+/*******************************
+Barra superior
+*******************************/
+.navbar {
+  background-color:  #46CA6A;
+  /* height: 70px; */
+}
+
+/*******************************
+Barra de menú
+*******************************/
+#sidebar-container {
+  background-color: #2F528F;
+}
+
+/*******************************
+Capas
+*******************************/
+.panel-default > .panel-heading {
+  background-color: #2F528F;
+}
+
+/*******************************
+Capas activas
+*******************************/
+
+.panel-body > .active {
+	background-color: #46CA6A;
+}
+
+
+#top-left-logo {width: 125px;
+	float: left;
+        margin-bottom: 1px;}
+
+@media (max-width: 400px) {
+  #top-left-logo {
+     width: 75%;
+     float: left;
+        margin-top: 0px;
+  }
+}
