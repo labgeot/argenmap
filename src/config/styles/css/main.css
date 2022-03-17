@@ -37,6 +37,9 @@ Capas activas
 	background-color: #46CA6A;
 }
 
+/*******************************
+Logo banner izquierdo, @media es el responsive
+*******************************/
 
 #top-left-logo {width: 170px;
 	float: left;
@@ -49,6 +52,10 @@ Capas activas
         margin-top: 0px;
   }
 }
+
+/*******************************
+Logo banner derecho, @media es el responsive
+*******************************/
 
 #top-right-logo {
   width: 200px;
