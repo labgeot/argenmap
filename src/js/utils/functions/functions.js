@@ -486,12 +486,12 @@ function loadTemplateStyleConfig(template, isDefaultTemplate) {
         //Change logotype
         $('#top-left-logo-link').attr("href","https://www.labgeot.uns.edu.ar/");
         $('#top-left-logo').attr("src","src/config/styles/images/logo.png");
-        $('#top-left-logo').attr("alt","Logo Instituto Geográfico Nacional");
-        $('#top-left-logo').attr("title","Instituto Geográfico Nacional");
-        $('#top-right-logo-link').attr("href","https://www.argentina.gob.ar/defensa");
+        $('#top-left-logo').attr("alt","Logo IDESoB");
+        $('#top-left-logo').attr("title","IDESoB");
+        $('#top-right-logo-link').attr("href","http://www.geografiayturismo.uns.edu.ar/");
         $('#top-right-logo').attr("src","src/config/styles/images/Logos_instituciones.png");
-        $('#top-right-logo').attr("alt","Logo Ministerio de Defensa");
-        $('#top-right-logo').attr("title","Ministerio de Defensa");
+        $('#top-right-logo').attr("alt","Logo Instituciones");
+        $('#top-right-logo').attr("title","Instituciones");
       }
       break;
     }
