@@ -487,7 +487,7 @@ function loadTemplateStyleConfig(template, isDefaultTemplate) {
         $('#top-left-logo-link').attr("href","https://www.labgeot.uns.edu.ar/");
         $('#top-left-logo').attr("src","src/config/styles/images/logo.png");
         $('#top-left-logo').attr("alt","Logo IDESoB");
-        $('#top-left-logo').attr("title","IDESoB");
+        $('#top-left-logo').attr("title","Infraestructura de Datos Espaciales del Sudoeste Bonaerense");
         $('#top-right-logo-link').attr("href","http://www.geografiayturismo.uns.edu.ar/");
         $('#top-right-logo').attr("src","src/config/styles/images/Logos_instituciones.png");
         $('#top-right-logo').attr("alt","Logo Instituciones");
