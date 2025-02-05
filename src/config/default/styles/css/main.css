@@ -1,18 +1,80 @@
-@media (max-width: 768px) and (orientation: portrait){
- #top-left-logo {
-  left: 50px;
-  background-size: 180px;
- }
+/*******************************
+Personalizado
+*******************************/
+.leaflet-container {
+	font: 12px/1.5 Roboto, sans-serif !important;
+}
+
+/*******************************
+Barra superior
+*******************************/
+.navbar {
+  background-color:  #46CA6A;
+  height: 70px;
+}
+
+/*******************************
+Barra de menú
+*******************************/
+#sidebar-container {
+  background-color: #2F528F;
+  top: 70px;
+
+}
+
+#mapa {
+  top: 20px;
+}
+
+/*******************************
+Capas
+*******************************/
+.panel-default > .panel-heading {
+  background-color: #2F528F;
   
 }
 
-@media (max-width: 768px) and (orientation: landscape){
+/*******************************
+Capas activas
+*******************************/
 
+.panel-body > .active {
+	background-color: #46CA6A;
+}
+
+/*******************************
+Logo banner izquierdo, @media es el responsive
+*******************************/
+
+#top-left-logo {width: 170px;
+	float: left;
+        margin-bottom: 1px;}
+
+@media (max-width: 400px) {
   #top-left-logo {
-    left: 250px ;
+     width: 40%;
+     float: left;
+        margin-top: 0px;
   }
 }
 
-.active a{
-  color:white
+/*******************************
+Logo banner derecho, @media es el responsive
+*******************************/
+
+#top-right-logo {
+  width: 200px;
+	float: right;
+  margin-bottom: 0px;
+  top: 5px;
+  position:absolute;
+  right: 10px;      
+}
+
+@media (max-width: 400px) {
+  #top-right-logo {
+     width: 40%;
+     float: right;
+        margin-top: 7px;
+  }
 }
